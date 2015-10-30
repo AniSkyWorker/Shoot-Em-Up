@@ -1,7 +1,13 @@
 #include <SFML/Graphics.hpp>
+#include "ResourceHolder.h"
+#include <iostream>
+
 const float player_speed = 100.f;
 const sf::Time time_per_frame = sf::seconds(1.f / 60.f);
-
+namespace Textures 
+{
+	enum ID {Airplane};
+}
 struct Game {
 	sf::RenderWindow window;
 	sf::Texture texture;
@@ -31,7 +37,7 @@ struct Game {
 		}
 		statistics_text.setFont(font);
 		statistics_text.setPosition(5.f, 5.f);
-		statistics_text.setCharacterSize(10);
+		statistics_text.setCharacterSize(7);
 	}
 	void run()
 	{
@@ -72,9 +78,11 @@ struct Game {
 			}
 		}
 	}
-	void update(sf::Time elapsed_time)
+	void update(sf::Time time_per_frame)
 	{
+		
 		sf::Vector2f movement(0.f, 0.f);
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)))
 			movement.x -= player_speed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)))
@@ -84,7 +92,8 @@ struct Game {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)))
 			movement.y += player_speed;
 
-		player.move(movement * elapsed_time.asSeconds());
+		player.move(movement * time_per_frame.asSeconds());
+
 	}
 	void render()
 	{
@@ -93,9 +102,11 @@ struct Game {
 		window.draw(statistics_text);
 		window.draw(player);
 		window.display();
+
 	}
 	void updateStatistics(sf::Time elapsed_time)
 	{
+
 		statistics_update_time += elapsed_time;
 		statistics_num_frames += 1;
 
@@ -107,11 +118,23 @@ struct Game {
 
 			statistics_update_time -= sf::seconds(1.0f);
 			statistics_num_frames = 0;
+		
 		}
 	}
 };
+
 int main()
 {
+	ResourceHolder<sf::Texture, Textures::ID> textures;
+	try
+	{
+		textures.load(Textures::Airplane, "Media/Textures/Eagle.png");
+	}
+	catch (std::runtime_error& e)
+	{
+		std::cout << "Exception: " << e.what() << std::endl;
+		return 1;
+	}
 	Game game;
 	game.run();
 }
