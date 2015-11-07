@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
+#include "Entity.h"
 #include "ResourceHolder.h"
+#include "Aircraft.h"
 #include <iostream>
 
 const float player_speed = 100.f;
