@@ -1,8 +1,7 @@
 #include "Entity.h"
 #include "ResourceIdientificators.h"
 #include "ResourceHolder.h"
-struct Aircraft : public Entity
-{
+struct Aircraft {
 	enum Type
 	{
 		Eagle,

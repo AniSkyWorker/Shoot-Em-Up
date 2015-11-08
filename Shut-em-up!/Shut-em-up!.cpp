@@ -1,15 +1,8 @@
 #include <SFML/Graphics.hpp>
-#include "Entity.h"
-#include "ResourceHolder.h"
-#include "Aircraft.h"
 #include <iostream>
 
 const float player_speed = 100.f;
 const sf::Time time_per_frame = sf::seconds(1.f / 60.f);
-namespace Textures 
-{
-	enum ID {Airplane};
-}
 struct Game {
 	sf::RenderWindow window;
 	sf::Texture texture;
@@ -127,16 +120,14 @@ struct Game {
 
 int main()
 {
-	ResourceHolder<sf::Texture, Textures::ID> textures;
-	try
+	try 
 	{
-		textures.load(Textures::Airplane, "Media/Textures/Eagle.png");
+		Game game;
+		game.run();
 	}
-	catch (std::runtime_error& e)
+	catch (std::exeption& e)
 	{
-		std::cout << "Exception: " << e.what() << std::endl;
-		return 1;
+		std::cout << "\nEXCEPTION: " << e.what() << std::endl;
 	}
-	Game game;
-	game.run();
+	
 }

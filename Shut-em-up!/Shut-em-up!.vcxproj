@@ -152,16 +152,20 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="ResourceIdientificators.h" />
     <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="SpriteNode.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ResourceHolder.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Aircraft.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Shut-em-up!.cpp" />
+    <ClCompile Include="SpriteNode.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

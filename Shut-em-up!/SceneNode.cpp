@@ -2,7 +2,10 @@
 #include <algorithm>
 #include <cassert>
 
+SceneNode::SceneNode() : parent(nullptr), children()
+{
 
+}
 void SceneNode::attachChild(ptr child)
 {
 	children.emplace_back(std::move(child->parent = this));

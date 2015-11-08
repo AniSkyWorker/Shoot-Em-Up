@@ -9,6 +9,7 @@ namespace Textures
 	{
 		Eagle,
 		Raptor,
+		Space,
 	};
 }
 template <typename Resource, typename Identifier> class ResourceHolder;
