@@ -8,7 +8,8 @@ SceneNode::SceneNode() : parent(nullptr), children()
 }
 void SceneNode::attachChild(ptr child)
 {
-	children.emplace_back(std::move(child->parent = this));
+	child->parent = this;
+	children.push_back(std::move(child));
 }
 SceneNode::ptr SceneNode::detachChild(const SceneNode& node) {
 	auto found = std::find_if(children.begin(), children.end(), [&](ptr& p) -> bool { return p.get() == &node; });
@@ -22,6 +23,7 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *=  getTransform();
 	drawCurrent(target, states);
+	drawChildren(target, states);
 }
 
 void SceneNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -30,10 +32,8 @@ void SceneNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 }
 void SceneNode::drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	for each (const ptr& child in children)
-	{
+	for each(const ptr& child in children)
 		child->draw(target, states);
-	}
 }
 
 void SceneNode::update(sf::Time dt)
@@ -47,7 +47,7 @@ void SceneNode::updateCurrent(sf::Time dt)
 }
 void SceneNode::updateChildren(sf::Time dt)
 {
-	for each(ptr& child in children)
+	for each(const ptr& child in children)
 		child->update(dt);
 }
 

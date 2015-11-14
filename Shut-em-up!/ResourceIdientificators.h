@@ -1,4 +1,4 @@
-
+#pragma once
 namespace sf
 {
 	class Texture;
@@ -9,9 +9,10 @@ namespace Textures
 	{
 		Eagle,
 		Raptor,
-		Space,
+		Desert,
 	};
 }
-template <typename Resource, typename Identifier> class ResourceHolder;
+template <typename Resource, typename Identifier>
+struct ResourceHolder;
 
 typedef ResourceHolder<sf::Texture, Textures::ID> TextureHolder;

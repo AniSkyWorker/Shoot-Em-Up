@@ -1,9 +1,16 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
+#include "ResourceHolder.h"
+#include "ResourceIdientificators.h"
 #include "Aircraft.h"
-#include "Entity.h"
 #include "SceneNode.h"
 #include "SpriteNode.h"
 #include <array> 
+namespace sf
+{
+	class RenderWindow;
+}
 struct World : sf::NonCopyable
 {
 	World(sf::RenderWindow& window);
@@ -14,8 +21,8 @@ struct World : sf::NonCopyable
 
 	enum Layer
 	{
-		Background,
-		Aircraft,
+		background,
+		aircraft,
 		count,
 	};
 	sf::RenderWindow& world_window;
@@ -26,6 +33,5 @@ struct World : sf::NonCopyable
 	sf::FloatRect world_bounds;
 	sf::Vector2f player_position;
 	float scroll_speed;
-	Aircraft* aircraft;
+	Aircraft* player_aircraft;
 };
-

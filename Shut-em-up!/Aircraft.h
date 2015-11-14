@@ -1,7 +1,9 @@
+#pragma once
 #include "Entity.h"
 #include "ResourceIdientificators.h"
-#include "ResourceHolder.h"
-struct Aircraft {
+
+struct Aircraft : public Entity
+{
 	enum Type
 	{
 		Eagle,
@@ -9,11 +11,10 @@ struct Aircraft {
 	};
 
 	Aircraft(Type type, const TextureHolder& textures);
+	virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	
 	Type Airtype;
 	sf::Sprite sprite;
 
-	void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
+	
 };
-

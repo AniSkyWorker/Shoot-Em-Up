@@ -3,7 +3,7 @@
 
 void Entity::setVelocity(sf::Vector2f velocity)
 {
-	velocity = vector_velocity;
+	vector_velocity = velocity;
 }
 void Entity::setVelocity(float x, float y)
 {

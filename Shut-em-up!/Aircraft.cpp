@@ -1,5 +1,6 @@
 #include "Aircraft.h"
 #include <SFML/Graphics.hpp>
+#include "ResourceHolder.h"
 
 Textures::ID toTextureID(Aircraft::Type type)
 {
