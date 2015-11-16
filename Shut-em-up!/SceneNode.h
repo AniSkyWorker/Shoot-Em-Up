@@ -2,7 +2,9 @@
 #include <vector>
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include "ObjectCategory.h"
 
+struct Command;
 struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 
@@ -25,6 +27,8 @@ struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::No
 	virtual	void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	virtual unsigned int getCategory();
+	void callCommand(const Command& command, sf::Time dt);
 
 	std::vector<ptr> children;
 	SceneNode* parent;

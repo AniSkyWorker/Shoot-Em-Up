@@ -1,5 +1,4 @@
 #include "Aircraft.h"
-#include <SFML/Graphics.hpp>
 #include "ResourceHolder.h"
 
 Textures::ID toTextureID(Aircraft::Type type)
@@ -20,4 +19,15 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures) : Airtype(type), sp
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const 
 {
 	target.draw(sprite, states);
+}
+
+unsigned int Aircraft::getCategory()
+{
+	switch (Airtype)
+	{
+	case Eagle:
+		return Category::player_aircraft;
+	default:
+		return Category::enemy_aircraft;
+	}
 }

@@ -16,5 +16,6 @@ struct Aircraft : public Entity
 	Type Airtype;
 	sf::Sprite sprite;
 
+	virtual unsigned int getCategory();
 	
 };

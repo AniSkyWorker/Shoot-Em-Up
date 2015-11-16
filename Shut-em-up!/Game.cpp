@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 const sf::Time time_per_frame = sf::seconds(1.f / 60.f);
 
@@ -6,6 +7,8 @@ Game::Game() : window(sf::VideoMode(640, 480), "Shoot them!!!", sf::Style::Close
 , font()
 , statistics_text()
 , world(window)
+,is_pause(false)
+,player()
 {
 	if(!font.loadFromFile("Media/Sansation.ttf"))
 	{
@@ -27,8 +30,9 @@ void Game::run()
 		{
 			time_since_last_update -= time_per_frame;
 
+			if(!is_pause)
+				update(time_per_frame);
 			processEvents();
-			update(time_per_frame);
 		}
 
 		updateStatistics(elapsed_time);
@@ -37,22 +41,21 @@ void Game::run()
 }
 void Game::processEvents()
 {
+	CommandQueue& commands = world.getCommandQueue();
+
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
+		player.handleEvent(event, commands);
 		switch(event.type)
 		{
-			/*case sf::Event::KeyPressed:
-				handlePlayerInput(event.key.code);
-				break;
-			case sf::Event::KeyReleased:
-				handlePlayerInput(event.key.code);
-				break;*/
 		case sf::Event::Closed:
 			window.close();
 			break;
 		}
 	}
+
+	player.handleRealTimeInput(commands);
 }
 void Game::update(sf::Time elapsed_time)
 	{

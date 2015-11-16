@@ -1,15 +1,18 @@
 #include "World.h"
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <algorithm>
+#include <cmath>
 World::World(sf::RenderWindow& window) 
 :world_window(window)
 ,world_view(window.getDefaultView())
 ,textures()
-,SceneGraph()
+,scene_graph()
 ,scene_layers()
 ,world_bounds(0.f , 0.f, world_view.getSize().x , 2000.f)
 ,player_position(world_view.getSize().x / 2, world_bounds.height - (world_view.getSize().y / 2))
 ,scroll_speed(-50)
 ,player_aircraft(nullptr)
+,command_queue()
 {
 	loadTextures();
 	buildScene();
@@ -19,34 +22,35 @@ World::World(sf::RenderWindow& window)
 
 void World::update(sf::Time dt)
 {
-	world_view.move(0, scroll_speed * dt.asSeconds());
-	sf::Vector2f position = player_aircraft->getPosition();
-	sf::Vector2f velocity = player_aircraft->getVelocity();
-	velocity.y = 0;
-	velocity.x = 0;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)))
-		velocity.x = -40;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)))
-		velocity.x = 40;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)))
-		velocity.y = -80;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)))
-		velocity.y = 80;
-	/*if (position.x <= world_bounds.left + 150 || position.x >= world_bounds.left + world_bounds.width - 150)
-	{
-		printf("%d", 1);
-		velocity.x = -velocity.x;
+	world_view.move(0.f, scroll_speed * dt.asSeconds());
+	player_aircraft->setVelocity(0.f, 0.f);
 
-	}*/
-		
-	player_aircraft->setVelocity(velocity);
-		SceneGraph.update(dt);
+	while (!command_queue.isEmpty())
+		scene_graph.callCommand(command_queue.pop(), dt);
+
+	sf::Vector2f velocity = player_aircraft->getVelocity();
+	if (velocity.x != 0.f && velocity.y != 0.f)
+		player_aircraft->setVelocity(velocity / std::sqrt(2.f));
+	player_aircraft->setVelocity(player_aircraft->getVelocity() + sf::Vector2f{ 0.f, scroll_speed });
+
+	scene_graph.update(dt);
+
+	sf::FloatRect view_bounds(world_view.getCenter() - world_view.getSize() / 2.f, world_view.getSize());
+	float border_distance = 40.f;
+	sf::Vector2f position = player_aircraft->getPosition();
+
+	position.x = std::max(position.x, view_bounds.left + border_distance);
+	position.x = std::min(position.x, view_bounds.left + view_bounds.width - border_distance);
+	position.y = std::max(position.y, view_bounds.top + border_distance);
+	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
+
+	player_aircraft->setPosition(position);
 }
 
 void World::draw()
 {
 	world_window.setView(world_view);
-	world_window.draw(SceneGraph);
+	world_window.draw(scene_graph);
 }
 
 void World::loadTextures()
@@ -63,7 +67,7 @@ void World::buildScene()
 		SceneNode::ptr layer(new SceneNode());
 		scene_layers[i] = layer.get();
 
-		SceneGraph.attachChild(std::move(layer));
+		scene_graph.attachChild(std::move(layer));
 	}
 
 	sf::Texture& texture = textures.get(Textures::Desert);
@@ -86,4 +90,9 @@ void World::buildScene()
 	std::unique_ptr<Aircraft> right_plane(new Aircraft(Aircraft::Raptor, textures));
 	right_plane->setPosition(80.f, 50.f);
 	player_aircraft->attachChild(std::move(right_plane));
+}
+
+CommandQueue& World::getCommandQueue()
+{
+	return command_queue;
 }
