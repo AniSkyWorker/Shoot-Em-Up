@@ -39,3 +39,5 @@ struct World : sf::NonCopyable
 	Aircraft* player_aircraft;
 	CommandQueue command_queue;
 };
+
+//залить книжку в группу

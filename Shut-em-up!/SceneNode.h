@@ -3,7 +3,6 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "ObjectCategory.h"
-
 struct Command;
 struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {

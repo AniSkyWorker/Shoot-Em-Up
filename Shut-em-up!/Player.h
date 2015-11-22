@@ -2,6 +2,7 @@
 #include "Command.h"
 #include <functional>
 #include <map>
+#include "CommandQueue.h"
 
 struct Player
 {

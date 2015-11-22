@@ -1,6 +1,6 @@
 #include "Aircraft.h"
 #include "ResourceHolder.h"
-
+#include "ResourceIdientificators.h"
 Textures::ID toTextureID(Aircraft::Type type)
 {
 	switch (type)

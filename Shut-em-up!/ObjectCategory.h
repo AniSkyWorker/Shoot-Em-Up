@@ -3,10 +3,11 @@ namespace Category
 {
 	enum Type
 	{
-		none = 0,
-		scene = 0 << 1,
-		player_aircraft = 1 << 1,
-		allied_aircraft = 1 << 2,
-		enemy_aircraft = 1 << 3,
+		none,
+		scene,
+		player_aircraft,
+		allied_aircraft,
+		enemy_aircraft,
 	};
+	//разработать инциализацию конкретного!
 }

@@ -8,7 +8,7 @@ World::World(sf::RenderWindow& window)
 ,textures()
 ,scene_graph()
 ,scene_layers()
-,world_bounds(0.f , 0.f, world_view.getSize().x , 2000.f)
+,world_bounds(0.f , 0.f, world_view.getSize().x , 6000.f)
 ,player_position(world_view.getSize().x / 2, world_bounds.height - (world_view.getSize().y / 2))
 ,scroll_speed(-50)
 ,player_aircraft(nullptr)
@@ -55,6 +55,7 @@ void World::draw()
 
 void World::loadTextures()
 {
+	printf("%d", 1);
 	textures.load(Textures::Eagle, "Media/textures/Eagle.png");
 	textures.load(Textures::Raptor, "Media/textures/Raptor.png");
 	textures.load(Textures::Desert, "Media/textures/Desert.png");

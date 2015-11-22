@@ -1,23 +1,32 @@
 #pragma once
-
-#include "World.h"
-#include "Player.h"
 #include <SFML/Graphics.hpp>
-struct Game : private sf::NonCopyable
+
+#include "Player.h"
+#include "StateStack.h"
+#include "ResourceIdientificators.h"
+#include "ResourceHolder.h"
+
+struct Application
 {
-	Game();
+	Application();
+
 	void run();
 	void processEvents();
 	void update(sf::Time time_per_frame);
 	void render();
+
 	void updateStatistics(sf::Time elapsed_time);
 
+	void registerStates();
+
 	sf::RenderWindow window;
-	World world;
-	sf::Font font;
+
 	sf::Text statistics_text;
 	sf::Time statistics_update_time;
 	std::size_t	statistics_num_frames;
-	bool is_pause;
+
 	Player player;
+	StateStack state_stack;
+	TextureHolder textures;
+	FontHolder fonts;
 };

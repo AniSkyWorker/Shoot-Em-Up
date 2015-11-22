@@ -2,6 +2,7 @@
 namespace sf
 {
 	class Texture;
+	class Font;
 }
 namespace Textures
 {
@@ -10,9 +11,16 @@ namespace Textures
 		Eagle,
 		Raptor,
 		Desert,
+		TitleScreen,
 	};
 }
-template <typename Resource, typename Identifier>
-struct ResourceHolder;
-
+namespace Fonts 
+{
+	enum ID
+	{
+		Main,
+	};
+}
+template <typename Resource, typename Identifier> struct ResourceHolder;
 typedef ResourceHolder<sf::Texture, Textures::ID> TextureHolder;
+typedef ResourceHolder<sf::Font, Fonts::ID> FontHolder;
