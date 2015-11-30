@@ -13,8 +13,10 @@ struct Aircraft : public Entity
 		Count
 	};
 
-	Aircraft(Type type, const TextureHolder& textures, FontHolder& fonts);
+	Aircraft(Type type, const TextureHolder& textures, const FontHolder& fonts);
 	virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void updateCurrent(sf::Time dt);
+
 	void update();
 	void updateMovement(sf::Time dt);
 

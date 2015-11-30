@@ -161,6 +161,7 @@
     <ClInclude Include="ParallelTask.h" />
     <ClInclude Include="PauseState.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="ResourceIdientificators.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="SpriteNode.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="ParallelTask.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="SpriteNode.cpp" />

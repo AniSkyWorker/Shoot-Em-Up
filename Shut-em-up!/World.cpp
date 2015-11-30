@@ -3,19 +3,18 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
-
-World::World(sf::RenderWindow& window) 
+#include <iostream>
+World::World(sf::RenderWindow& window, FontHolder& fonts) 
 :world_window(window)
 ,world_view(window.getDefaultView())
 ,textures()
 ,scene_graph()
 ,scene_layers()
-,world_bounds(0.f , 0.f, world_view.getSize().x , 6000.f)
+,world_bounds(0.f , 0.f, world_view.getSize().x , 5000.f)
 ,player_position(world_view.getSize().x / 2, world_bounds.height - (world_view.getSize().y / 2))
 ,scroll_speed(-50)
 ,player_aircraft(nullptr)
-,command_queue()
-,fonts()
+,fonts(fonts)
 {
 	loadTextures();
 	buildScene();
@@ -36,8 +35,8 @@ void World::update(sf::Time dt)
 		player_aircraft->setVelocity(velocity / std::sqrt(2.f));
 	player_aircraft->setVelocity(player_aircraft->getVelocity() + sf::Vector2f{ 0.f, scroll_speed });
 
+	spawnEnemies();
 	scene_graph.update(dt);
-
 	sf::FloatRect view_bounds(world_view.getCenter() - world_view.getSize() / 2.f, world_view.getSize());
 	float border_distance = 40.f;
 	sf::Vector2f position = player_aircraft->getPosition();
@@ -48,7 +47,7 @@ void World::update(sf::Time dt)
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
 
 	player_aircraft->setPosition(position);
-	spawnEnemies();
+	
 }
 
 void World::draw()
@@ -87,20 +86,12 @@ void World::buildScene()
 	player_aircraft ->setPosition(player_position);
 	scene_layers[aircraft]->attachChild(std::move(player));
 
-
 	addEnemies();
 }
 
 CommandQueue& World::getCommandQueue()
 {
 	return command_queue;
-}
-
-World::SpawnPoint::SpawnPoint(Aircraft::Type type, float x, float y)
-:type(type)
-,x(x)
-,y(y)
-{
 }
 
 sf::FloatRect World::getViewBounds()
@@ -118,19 +109,23 @@ sf::FloatRect World::getBattlefieldBounds()
 
 void World::spawnEnemies()
 {
-	while (!spawn_points.empty() && spawn_points.back().y > getBattlefieldBounds().top)
+	//std::cout << spawn_points.back().y << getBattlefieldBounds().top << std::endl;
+	while (!spawn_points.empty())// && spawn_points.back().y > getBattlefieldBounds().top)
 	{
 		SpawnPoint spawn = spawn_points.back();
 		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.type, textures, fonts));
+		printf("%d", 1);
 		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
+
 		scene_layers[aircraft]->attachChild(std::move(enemy));
 		spawn_points.pop_back();
 	}
 }
 void World::addEnemy(Aircraft::Type type, float x, float y)
 {
-	SpawnPoint spawn(type, world_view.getSize().x / 2.f + x, world_bounds.height - world_view.getSize().y / 2.f - y);
+	SpawnPoint spawn(type, player_position.x + x, player_position.y - y);
+	spawn_points.push_back(spawn);
 }
 
 void World::addEnemies()

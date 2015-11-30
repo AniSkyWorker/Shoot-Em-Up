@@ -17,9 +17,9 @@ Textures::ID toTextureID(Aircraft::Type type)
 		return Textures::Raptor;
 	}
 }
-Aircraft::Aircraft(Type type, const TextureHolder& textures, FontHolder& fonts)
+Aircraft::Aircraft(Type type, const TextureHolder& textures,const FontHolder& fonts)
 :Airtype(type)
-,sprite(textures.get(toTextureID(type)))
+,sprite(textures.get(Table[type].texture))
 ,Entity(Table[type].hitpoints)
 ,travelled_dist(0.f)
 ,direction_index(0)
@@ -30,6 +30,8 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, FontHolder& fonts)
 	std::unique_ptr<TextNode> healthDisplay(new TextNode(fonts, ""));
 	health_display = healthDisplay.get();
 	attachChild(std::move(healthDisplay));
+
+	update();
 }
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const 
 {
@@ -71,4 +73,11 @@ void Aircraft::updateMovement(sf::Time dt)
 		setVelocity(vx, vy);
 		travelled_dist += Table[Airtype].speed * dt.asSeconds();
 	}
+}
+
+void Aircraft::updateCurrent(sf::Time dt)
+{
+	update();
+	updateMovement(dt);
+	Entity::updateCurrent(dt);
 }

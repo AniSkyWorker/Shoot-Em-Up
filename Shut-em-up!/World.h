@@ -3,15 +3,17 @@
 #include <SFML/Graphics.hpp>
 #include "ResourceHolder.h"
 #include "ResourceIdientificators.h"
-#include "Aircraft.h"
 #include "SceneNode.h"
 #include "SpriteNode.h"
-#include <array> 
+#include "Aircraft.h"
 #include "CommandQueue.h"
+#include "Command.h"
+
+#include <array> 
 
 struct World : sf::NonCopyable
 {
-	World(sf::RenderWindow& window);
+	World(sf::RenderWindow& window, FontHolder& fonts);
 
 	void update(sf::Time dt);
 	void draw();
@@ -30,18 +32,24 @@ struct World : sf::NonCopyable
 	sf::RenderWindow& world_window;
 	sf::View world_view;
 	TextureHolder textures;
-	FontHolder fonts;
+	FontHolder& fonts;
 	SceneNode scene_graph;
 	std::array<SceneNode*, count> scene_layers;
 	sf::FloatRect world_bounds;
 	sf::Vector2f player_position;
 	float scroll_speed;
 	Aircraft* player_aircraft;
+	std::vector<Aircraft*>	enemies;
 	CommandQueue command_queue;
 
 	struct SpawnPoint
 	{
-		SpawnPoint(Aircraft::Type type, float x, float y);
+		SpawnPoint(Aircraft::Type type, float x, float y)
+		:type(type)
+		,x(x)
+		,y(y)
+		{
+		}
 
 		Aircraft::Type type;
 		float x;

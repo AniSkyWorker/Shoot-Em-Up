@@ -2,7 +2,7 @@
 
 GameState::GameState(StateStack& stack, Context context)
 :State(stack, context)
-,world(*context.window)
+,world(*context.window, *context.fonts)
 ,player(*context.player)
 {
 }
@@ -14,8 +14,6 @@ void GameState::draw()
 
 bool GameState::update(sf::Time dt)
 {
-
-
 	world.update(dt);
 
 	CommandQueue& commands = world.getCommandQueue();

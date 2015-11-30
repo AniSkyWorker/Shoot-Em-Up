@@ -37,6 +37,7 @@ bool Entity::isDestroyed() const
 {
 	return hitpoints <= 0;
 }
+
 void Entity::destroy()
 {
 	hitpoints = 0;
