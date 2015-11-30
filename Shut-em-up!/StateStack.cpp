@@ -18,8 +18,10 @@ State::ptr StateStack::createState(States::ID stateID)
 {
 	auto found = factories.find(stateID);
 	assert(found != factories.end());
+	
 
 	return found->second();
+	printf("%d", 1);
 }
 
 void StateStack::pushState(States::ID state_ID)

@@ -31,5 +31,4 @@ struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::No
 
 	std::vector<ptr> children;
 	SceneNode* parent;
-	
 };

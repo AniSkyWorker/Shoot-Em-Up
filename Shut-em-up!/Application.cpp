@@ -43,7 +43,7 @@ void Application::run()
 			
 			processEvents();
 			update(time_per_frame);
-
+			
 			if (state_stack.isEmpty())
 				window.close();
 		}

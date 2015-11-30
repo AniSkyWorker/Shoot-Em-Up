@@ -20,6 +20,7 @@ struct AircraftMover
 };
 Player::Player()
 {
+
 	key_binding[sf::Keyboard::Left] = moveLeft;
 	key_binding[sf::Keyboard::Right] = moveRight;
 	key_binding[sf::Keyboard::Up] = moveUp;

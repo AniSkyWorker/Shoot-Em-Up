@@ -2,6 +2,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <algorithm>
 #include <cmath>
+#include <memory>
+
 World::World(sf::RenderWindow& window) 
 :world_window(window)
 ,world_view(window.getDefaultView())
@@ -13,6 +15,7 @@ World::World(sf::RenderWindow& window)
 ,scroll_speed(-50)
 ,player_aircraft(nullptr)
 ,command_queue()
+,fonts()
 {
 	loadTextures();
 	buildScene();
@@ -45,6 +48,7 @@ void World::update(sf::Time dt)
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
 
 	player_aircraft->setPosition(position);
+	spawnEnemies();
 }
 
 void World::draw()
@@ -55,7 +59,6 @@ void World::draw()
 
 void World::loadTextures()
 {
-	printf("%d", 1);
 	textures.load(Textures::Eagle, "Media/textures/Eagle.png");
 	textures.load(Textures::Raptor, "Media/textures/Raptor.png");
 	textures.load(Textures::Desert, "Media/textures/Desert.png");
@@ -79,21 +82,71 @@ void World::buildScene()
 	background_sprite->setPosition(world_bounds.left, world_bounds.top);
 	scene_layers[background]->attachChild(std::move(background_sprite));
 
-	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, textures)); 
+	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, textures, fonts)); 
 	player_aircraft = player.get();
 	player_aircraft ->setPosition(player_position);
 	scene_layers[aircraft]->attachChild(std::move(player));
 
-	std::unique_ptr<Aircraft> left_plane(new Aircraft(Aircraft::Raptor, textures));
-	left_plane->setPosition(-80.f, 50.f);
-	player_aircraft->attachChild(std::move(left_plane));
 
-	std::unique_ptr<Aircraft> right_plane(new Aircraft(Aircraft::Raptor, textures));
-	right_plane->setPosition(80.f, 50.f);
-	player_aircraft->attachChild(std::move(right_plane));
+	addEnemies();
 }
 
 CommandQueue& World::getCommandQueue()
 {
 	return command_queue;
+}
+
+World::SpawnPoint::SpawnPoint(Aircraft::Type type, float x, float y)
+:type(type)
+,x(x)
+,y(y)
+{
+}
+
+sf::FloatRect World::getViewBounds()
+{
+	return sf::FloatRect(world_view.getCenter() - world_view.getSize() / 2.f, world_view.getSize());
+}
+
+sf::FloatRect World::getBattlefieldBounds()
+{
+	sf::FloatRect bounds = getViewBounds();
+	bounds.top -= 100.f;
+	bounds.height += 100.f;
+	return bounds;
+}
+
+void World::spawnEnemies()
+{
+	while (!spawn_points.empty() && spawn_points.back().y > getBattlefieldBounds().top)
+	{
+		SpawnPoint spawn = spawn_points.back();
+		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.type, textures, fonts));
+		enemy->setPosition(spawn.x, spawn.y);
+		enemy->setRotation(180.f);
+		scene_layers[aircraft]->attachChild(std::move(enemy));
+		spawn_points.pop_back();
+	}
+}
+void World::addEnemy(Aircraft::Type type, float x, float y)
+{
+	SpawnPoint spawn(type, world_view.getSize().x / 2.f + x, world_bounds.height - world_view.getSize().y / 2.f - y);
+}
+
+void World::addEnemies()
+{
+	addEnemy(Aircraft::Raptor, 0.f, 500.f);
+	addEnemy(Aircraft::Raptor, 0.f, 1000.f);
+	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
+	addEnemy(Aircraft::Raptor, -100.f, 1150.f);
+	addEnemy(Aircraft::Raptor, 70.f, 1500.f);
+	addEnemy(Aircraft::Raptor, -70.f, 1500.f);
+	addEnemy(Aircraft::Raptor, -70.f, 1710.f);
+	addEnemy(Aircraft::Raptor, 70.f, 1700.f);
+	addEnemy(Aircraft::Raptor, 30.f, 1850.f);
+	addEnemy(Aircraft::Raptor, 300.f, 2200.f);
+	addEnemy(Aircraft::Raptor, -300.f, 2200.f);
+	addEnemy(Aircraft::Raptor, 0.f, 2200.f);
+	addEnemy(Aircraft::Raptor, 0.f, 2500.f);
+	addEnemy(Aircraft::Raptor, -300.f, 2700.f);
 }

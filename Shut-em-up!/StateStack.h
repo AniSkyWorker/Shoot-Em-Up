@@ -10,11 +10,7 @@
 #include <functional>
 #include <map>
 
-namespace sf
-{
-	class Event;
-	class RenderWindow;
-}
+
 struct StateStack: private sf::NonCopyable
 {
 	enum Action
@@ -25,6 +21,7 @@ struct StateStack: private sf::NonCopyable
 	};
 
 	StateStack(const State::Context context);
+
 	template <typename T> void registerState(States::ID state_ID)
 	{
 		factories[state_ID] = [this]()
@@ -36,6 +33,7 @@ struct StateStack: private sf::NonCopyable
 	void update(sf::Time dt);
 	void draw();
 	void handleEvent(const sf::Event& event);
+
 	void pushState(States::ID state_ID);
 	void popState();
 	void clearState();

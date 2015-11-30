@@ -88,4 +88,5 @@ bool MenuState::handleEvent(const sf::Event& event)
 			reqStackPop();
 		}
 	}
+	return true;
 }

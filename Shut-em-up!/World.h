@@ -8,17 +8,16 @@
 #include "SpriteNode.h"
 #include <array> 
 #include "CommandQueue.h"
-namespace sf
-{
-	class RenderWindow;
-}
+
 struct World : sf::NonCopyable
 {
 	World(sf::RenderWindow& window);
+
 	void update(sf::Time dt);
 	void draw();
 	void loadTextures();
 	void buildScene();
+
 	CommandQueue& getCommandQueue();
 
 	enum Layer
@@ -31,6 +30,7 @@ struct World : sf::NonCopyable
 	sf::RenderWindow& world_window;
 	sf::View world_view;
 	TextureHolder textures;
+	FontHolder fonts;
 	SceneNode scene_graph;
 	std::array<SceneNode*, count> scene_layers;
 	sf::FloatRect world_bounds;
@@ -38,6 +38,21 @@ struct World : sf::NonCopyable
 	float scroll_speed;
 	Aircraft* player_aircraft;
 	CommandQueue command_queue;
-};
 
-//залить книжку в группу
+	struct SpawnPoint
+	{
+		SpawnPoint(Aircraft::Type type, float x, float y);
+
+		Aircraft::Type type;
+		float x;
+		float y;
+	};
+
+	void spawnEnemies();
+	void addEnemies();
+	void addEnemy(Aircraft::Type type, float x, float y);
+
+	std::vector<SpawnPoint> spawn_points;
+	sf::FloatRect getViewBounds();
+	sf::FloatRect getBattlefieldBounds();
+};
