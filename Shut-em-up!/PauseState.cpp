@@ -44,15 +44,15 @@ bool PauseState::handleEvent(const sf::Event& event)
 	if (event.type != sf::Event::KeyPressed)
 		return false;
 
-	if (event.key.code == sf::Keyboard::Space)
+	if (event.key.code == sf::Keyboard::P)
 	{
-		reqStackPop();
+		requestStackPop();
 	}
 
 	if (event.key.code == sf::Keyboard::Escape)
 	{
-		reqStateClear();
-		reqStackPush(States::menu);
+		requestStateClear();
+		requestStackPush(States::menu);
 	}
 
 	return false;

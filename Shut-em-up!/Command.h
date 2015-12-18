@@ -1,27 +1,27 @@
 #pragma once
 #include <functional>
-#include "SceneNode.h"
 #include <cassert>
+#include <SFML\Graphics.hpp>
+#include "ObjectCategory.h"
 
+struct SceneNode;
 
 struct Command
 {
-	Command()
-		: action()
-		, category(Category::none)
-	{
-	}
+	typedef std::function<void(SceneNode&, sf::Time)> Action;
 
-	std::function<void(SceneNode&, sf::Time)> action;
-	unsigned int category;
+	Command();
+
+	Action						action;
+	unsigned int				category;
 };
 
 template <typename GameObject, typename Function>
-std::function <void(SceneNode&, sf::Time)> derivedAction(Function func)
+Command::Action derivedAction(Function fn)
 {
 	return [=](SceneNode& node, sf::Time dt)
 	{
 		assert(dynamic_cast<GameObject*>(&node) != nullptr);
-		func(static_cast<GameObject&>(node), dt);
+		fn(static_cast<GameObject&>(node), dt);
 	};
 }

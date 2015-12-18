@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include "Command.h"
+
 struct CommandQueue
 {
 	void push(const Command& command);

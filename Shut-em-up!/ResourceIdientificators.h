@@ -10,6 +10,8 @@ namespace Textures
 	{
 		Eagle,
 		Raptor,
+		Bullets,
+		Missile,
 		Desert,
 		TitleScreen,
 	};

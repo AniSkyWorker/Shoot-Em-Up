@@ -10,49 +10,62 @@
 #include <functional>
 #include <map>
 
+namespace sf
+{
+	class Event;
+	class RenderWindow;
+}
 
-struct StateStack: private sf::NonCopyable
+struct StateStack : private sf::NonCopyable
 {
 	enum Action
 	{
-		push,
-		pop,
-		clear,
+		Push,
+		Pop,
+		Clear,
+	};
+	StateStack(State::Context context);
+
+	template <typename T>
+	void				registerState(States::ID stateID);
+
+	void				update(sf::Time dt);
+	void				draw();
+	void				handleEvent(const sf::Event& event);
+
+	void				pushState(States::ID stateID);
+	void				popState();
+	void				clearStates();
+
+	bool				isEmpty() const;
+
+
+	State::Ptr			createState(States::ID stateID);
+	void				applyPendingChanges();
+
+
+	struct PendingChange
+	{
+		PendingChange(Action action, States::ID stateID = States::none);
+
+		Action				action;
+		States::ID			stateID;
 	};
 
-	StateStack(const State::Context context);
 
-	template <typename T> void registerState(States::ID state_ID)
-	{
-		factories[state_ID] = [this]()
-		{
-			return State::ptr(new T(*this, context));
-		};
-	}
-	
-	void update(sf::Time dt);
-	void draw();
-	void handleEvent(const sf::Event& event);
+	std::vector<State::Ptr>								mStack;
+	std::vector<PendingChange>							mPendingList;
 
-	void pushState(States::ID state_ID);
-	void popState();
-	void clearState();
-
-	bool isEmpty() const;
-
-	State::ptr createState(States::ID state_ID);
-	void applyPendingChanges();
-
-	struct PendingChanges
-	{
-		PendingChanges(Action action, States::ID stateID);
-		Action action;
-		States::ID state_ID;
-	};
-
-	std::vector<State::ptr> stack;
-	std::vector<PendingChanges> pending_list;
-	State::Context context;
-	std::map<States::ID, std::function<State::ptr()>> factories;
+	State::Context										mContext;
+	std::map<States::ID, std::function<State::Ptr()>>	mFactories;
 };
 
+
+template <typename T>
+void StateStack::registerState(States::ID stateID)
+{
+	mFactories[stateID] = [this]()
+	{
+		return State::Ptr(new T(*this, mContext));
+	};
+}

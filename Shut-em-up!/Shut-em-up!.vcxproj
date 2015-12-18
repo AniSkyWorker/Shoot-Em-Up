@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Aircraft.cpp" />
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Entity.cpp" />

@@ -1,49 +1,68 @@
 #include "Entity.h"
-#include <SFML/Graphics.hpp>
-
+#include <cassert>
 Entity::Entity(int hitpoints)
-:vector_velocity()
-,hitpoints(hitpoints)
+	: mVelocity()
+	, mHitpoints(hitpoints)
 {
 }
 
 void Entity::setVelocity(sf::Vector2f velocity)
 {
-	vector_velocity = velocity;
+	mVelocity = velocity;
 }
-void Entity::setVelocity(float x, float y)
+
+void Entity::setVelocity(float vx, float vy)
 {
-	vector_velocity.x = x;
-	vector_velocity.y = y;
+	mVelocity.x = vx;
+	mVelocity.y = vy;
 }
+
 sf::Vector2f Entity::getVelocity() const
 {
-	return vector_velocity;
+	return mVelocity;
+}
+
+void Entity::accelerate(sf::Vector2f velocity)
+{
+	mVelocity += velocity;
+}
+
+void Entity::accelerate(float vx, float vy)
+{
+	mVelocity.x += vx;
+	mVelocity.y += vy;
 }
 
 int Entity::getHitpoints() const
 {
-	return hitpoints;
+	return mHitpoints;
 }
-void Entity::damage(int points)
-{
-	hitpoints -= points;
-}
+
 void Entity::repair(int points)
 {
-	hitpoints += points;
+	assert(points > 0);
+
+	mHitpoints += points;
 }
-bool Entity::isDestroyed() const
+
+void Entity::damage(int points)
 {
-	return hitpoints <= 0;
+	assert(points > 0);
+
+	mHitpoints -= points;
 }
 
 void Entity::destroy()
 {
-	hitpoints = 0;
+	mHitpoints = 0;
 }
 
-void Entity::updateCurrent(sf::Time dt)
+bool Entity::isDestroyed() const
 {
-	move(vector_velocity * dt.asSeconds());
+	return mHitpoints <= 0;
+}
+
+void Entity::updateCurrent(sf::Time dt, CommandQueue&)
+{
+	move(mVelocity * dt.asSeconds());
 }

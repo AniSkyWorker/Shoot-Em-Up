@@ -3,12 +3,10 @@
 #include <memory>
 #include "StateIdientificators.h"
 #include "ResourceIdientificators.h"
-
+#include <SFML/Graphics.hpp>
 namespace sf
 {
 	class RenderWindow;
-	class Event;
-	class Time;
 }
 
 struct StateStack;
@@ -16,31 +14,32 @@ struct Player;
 
 struct State
 {
-	typedef std::unique_ptr<State> ptr;
+	typedef std::unique_ptr<State> Ptr;
 
 	struct Context
 	{
 		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player);
 
-		sf::RenderWindow* window;
-		TextureHolder* textures;
-		FontHolder* fonts;
-		Player* player;
+		sf::RenderWindow*	window;
+		TextureHolder*		textures;
+		FontHolder*			fonts;
+		Player*				player;
 	};
 
 	State(StateStack& stack, Context context);
-	virtual ~State();
-	virtual void draw() = 0;
-	virtual bool update(sf::Time dt) = 0;
-	virtual bool handleEvent(const sf::Event& event) = 0;
+	virtual				~State();
 
-	void reqStackPush(States::ID state_id);
-	void reqStackPop();
-	void reqStateClear();
+	virtual void		draw() = 0;
+	virtual bool		update(sf::Time dt) = 0;
+	virtual bool		handleEvent(const sf::Event& event) = 0;
 
-	Context getContext() const;
+	void				requestStackPush(States::ID stateID);
+	void				requestStackPop();
+	void				requestStateClear();
 
-	StateStack* state_stack;
-	Context object_context;
+	Context				getContext() const;
+
+	StateStack*			mStack;
+	Context				mContext;
 };
 

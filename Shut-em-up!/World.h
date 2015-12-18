@@ -9,11 +9,16 @@
 #include "CommandQueue.h"
 #include "Command.h"
 
-#include <array> 
+#include <array>
 
-struct World : sf::NonCopyable
+namespace sf
 {
-	World(sf::RenderWindow& window, FontHolder& fonts);
+	class RenderWindow;
+}
+
+struct World : private sf::NonCopyable
+{
+	explicit World(sf::RenderWindow& window, FontHolder& fonts);
 
 	void update(sf::Time dt);
 	void draw();
@@ -59,6 +64,9 @@ struct World : sf::NonCopyable
 	void spawnEnemies();
 	void addEnemies();
 	void addEnemy(Aircraft::Type type, float x, float y);
+	void destroyEntitiesOutsideView();
+
+	void guideMissiles();
 
 	std::vector<SpawnPoint> spawn_points;
 	sf::FloatRect getViewBounds();

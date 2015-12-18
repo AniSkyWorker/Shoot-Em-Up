@@ -80,12 +80,12 @@ bool MenuState::handleEvent(const sf::Event& event)
 	{
 		if (index == Play)
 		{
-			reqStackPop();
-			reqStackPush(States::loading);
+			requestStackPop();
+			requestStackPush(States::game);
 		}
 		else if (index == Exit)
 		{
-			reqStackPop();
+			requestStackPop();
 		}
 	}
 	return true;

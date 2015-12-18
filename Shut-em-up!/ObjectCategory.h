@@ -3,11 +3,15 @@ namespace Category
 {
 	enum Type
 	{
-		none,
-		scene,
-		player_aircraft,
-		allied_aircraft,
-		enemy_aircraft,
+		None = 0,
+		SceneAirLayer = 1 << 0,
+		PlayerAircraft = 1 << 1,
+		AlliedAircraft = 1 << 2,
+		EnemyAircraft = 1 << 3,
+		AlliedProjectile = 1 << 4,
+		EnemyProjectile = 1 << 5,
+
+		Aircraft = PlayerAircraft | AlliedAircraft | EnemyAircraft,
+		Projectile = AlliedProjectile | EnemyProjectile,
 	};
-	//разработать инциализацию конкретного!
 }
