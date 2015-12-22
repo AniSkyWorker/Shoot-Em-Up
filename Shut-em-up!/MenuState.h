@@ -12,9 +12,9 @@ struct MenuState: public State
 	
 	MenuState(StateStack& stack, Context context);
 
-	virtual void draw();
-	virtual bool update(sf::Time dt);
-	virtual bool handleEvent(const sf::Event& event);
+	virtual void draw() override;
+	virtual bool update(sf::Time dt) override;
+	virtual bool handleEvent(const sf::Event& event) override;
 
 	void updateOptionText();
 

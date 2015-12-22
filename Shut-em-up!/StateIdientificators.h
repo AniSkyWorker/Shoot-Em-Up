@@ -1,4 +1,5 @@
 #pragma once
+
 namespace States
 {
 	enum ID
@@ -8,6 +9,7 @@ namespace States
 		menu,
 		game,
 		loading,
-		pause
+		pause,
+		gameover
 	};
 }

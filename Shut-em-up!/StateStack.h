@@ -27,45 +27,42 @@ struct StateStack : private sf::NonCopyable
 	StateStack(State::Context context);
 
 	template <typename T>
-	void				registerState(States::ID stateID);
+	void registerState(States::ID stateID);
 
-	void				update(sf::Time dt);
-	void				draw();
-	void				handleEvent(const sf::Event& event);
+	void update(sf::Time dt);
+	void draw();
+	void handleEvent(const sf::Event& event);
 
-	void				pushState(States::ID stateID);
-	void				popState();
-	void				clearStates();
+	void pushState(States::ID stateID);
+	void popState();
+	void clearStates();
 
-	bool				isEmpty() const;
+	bool isEmpty() const;
 
-
-	State::Ptr			createState(States::ID stateID);
-	void				applyPendingChanges();
+	State::Ptr createState(States::ID stateID);
+	void applyPendingChanges();
 
 
 	struct PendingChange
 	{
 		PendingChange(Action action, States::ID stateID = States::none);
 
-		Action				action;
-		States::ID			stateID;
+		Action action;
+		States::ID stateID;
 	};
 
+	std::vector<State::Ptr>	stack;
+	std::vector<PendingChange> pending_list;
 
-	std::vector<State::Ptr>								mStack;
-	std::vector<PendingChange>							mPendingList;
-
-	State::Context										mContext;
-	std::map<States::ID, std::function<State::Ptr()>>	mFactories;
+	State::Context context;
+	std::map<States::ID, std::function<State::Ptr()>> factories;
 };
-
 
 template <typename T>
 void StateStack::registerState(States::ID stateID)
 {
-	mFactories[stateID] = [this]()
+	factories[stateID] = [this]()
 	{
-		return State::Ptr(new T(*this, mContext));
+		return State::Ptr(new T(*this, context));
 	};
 }

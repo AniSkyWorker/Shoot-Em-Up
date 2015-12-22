@@ -2,9 +2,9 @@
 #include "ResourceHolder.h"
 
 PauseState::PauseState(StateStack& stack, Context context)
-:State(stack, context)
-,paused_text()
-,instructions()
+	:State(stack, context)
+	,paused_text()
+	,instructions()
 {
 	sf::Vector2f view_size = context.window->getView().getSize();
 

@@ -6,17 +6,18 @@
 #include "GameState.h"
 #include "PauseState.h"
 #include "LoadingState.h"
+#include "GameOverState.h"
 
-const sf::Time time_per_frame = sf::seconds(1.f / 60.f);
+const sf::Time Application::time_per_frame = sf::seconds(1.f / 60.f);
 
 Application::Application() 
-:window(sf::VideoMode(640, 480), "Shoot them!!!", sf::Style::Close)
-,textures()
-,fonts()
-,player()
-,statistics_text()
-,statistics_num_frames(0)
-,state_stack(State::Context(window, textures, fonts, player))
+	:window(sf::VideoMode(640, 480), "Shoot them!!!", sf::Style::Close)
+	,textures()
+	,fonts()
+	,player()
+	,statistics_text()
+	,statistics_num_frames(0)
+	,state_stack(State::Context(window, textures, fonts, player))
 {
 	fonts.load(Fonts::Main, "Media/Sansation.ttf");
 	textures.load(Textures::TitleScreen, "Media/Textures/TitleScreen.jpg");
@@ -103,4 +104,5 @@ void Application::registerStates()
 	state_stack.registerState<TitleState>(States::title);
 	state_stack.registerState<PauseState>(States::pause);
 	state_stack.registerState<LoadingState>(States::loading);
+	state_stack.registerState<GameOverState>(States::gameover);
 }

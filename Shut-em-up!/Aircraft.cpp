@@ -5,6 +5,8 @@
 
 #include <cmath>
 #include <iostream>
+#include <random>
+#include <ctime>
 
 namespace
 {
@@ -23,8 +25,8 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,sprite(textures.get(Table[type].texture))
 	,fire_rate(1)
 	,spread_level(1)
-	,missile_ammo(20)
-	,mDropPickupCommand()
+	,missile_ammo(5)
+	,pickup_command()
 	,travalled_distance(0.f)
 	,direction_index(0)
 	,missile_display(nullptr)
@@ -44,11 +46,11 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 		createProjectile(node, Projectile::Missile, 0.f, 0.5f, textures);
 	};
 
-	mDropPickupCommand.category = Category::SceneAirLayer;
-	/*	mDropPickupCommand.action   = [this, &textures] (SceneNode& node, sf::Time)
+	pickup_command.category = Category::SceneAirLayer;
+	pickup_command.action   = [this, &textures] (SceneNode& node, sf::Time)
 	{
-	createPickup(node, textures);
-	};*/
+		createPickup(node, textures);
+	};
 
 	std::unique_ptr<TextNode> health(new TextNode(fonts, ""));
 	health_display = health.get();
@@ -72,14 +74,13 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 
 void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	// Entity has been destroyed: Possibly drop pickup, mark for removal
-	/*if (isDestroyed())
+	if (isDestroyed())
 	{
-	checkPickupDrop(commands);
+		checkPickupDrop(commands);
 
-	mIsMarkedForRemoval = true;
-	return;
-	}*/
+		is_marked_for_remove = true;
+		return;
+	}
 
 	checkProjectileLaunch(dt, commands);
 
@@ -102,10 +103,10 @@ sf::FloatRect Aircraft::getBoundingRect() const
 	return getWorldTransform().transformRect(sprite.getGlobalBounds());
 }
 
-/*bool Aircraft::isMarkedForRemoval() const
+bool Aircraft::isMarkedForRemoval() const
 {
-return mIsMarkedForRemoval;
-}*/
+	return is_marked_for_remove;
+}
 
 bool Aircraft::isAllied() const
 {
@@ -117,23 +118,23 @@ float Aircraft::getMaxSpeed() const
 	return Table[type].speed;
 }
 
-/*void Aircraft::increaseFireRate()
+void Aircraft::increaseFireRate()
 {
-if (mFireRateLevel < 10)
-++mFireRateLevel;
+	if (fire_rate < 10)
+		++fire_rate;
 }
 
 void Aircraft::increaseSpread()
 {
-if (mSpreadLevel < 3)
-++mSpreadLevel;
+	if (spread_level < 3)
+		++spread_level;
 }
 
 void Aircraft::collectMissiles(unsigned int count)
 {
-mMissileAmmo += count;
+	missile_ammo += count;
 }
-*/
+
 void Aircraft::fire()
 {
 	if (Table[type].fireInterval != sf::Time::Zero)
@@ -170,11 +171,11 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 	}
 }
 
-/*void Aircraft::checkPickupDrop(CommandQueue& commands)
+void Aircraft::checkPickupDrop(CommandQueue& commands)
 {
-if (!isAllied() && randomInt(3) == 0)
-commands.push(mDropPickupCommand);
-}*/
+	if (!isAllied() && random(2) == 0)
+		commands.push(pickup_command);
+}
 
 void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 {
@@ -203,23 +204,47 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) const
 {
 	Projectile::Type type = isAllied() ? Projectile::AlliedBullet : Projectile::EnemyBullet;
-
-	switch (spread_level)
+	
+	if (isAllied())
 	{
-	case 1:
-		createProjectile(node, type, 0.0f, 0.5f, textures);
-		break;
+		switch (spread_level)
+		{
+		case 1:
+			createProjectile(node, type, 0.0f, 0.5f, textures);
+			break;
 
-	case 2:
-		createProjectile(node, type, -0.33f, 0.33f, textures);
-		createProjectile(node, type, +0.33f, 0.33f, textures);
-		break;
+		case 2:
+			createProjectile(node, type, -0.33f, 0.33f, textures);
+			createProjectile(node, type, +0.33f, 0.33f, textures);
+			break;
 
-	case 3:
-		createProjectile(node, type, -0.5f, 0.33f, textures);
-		createProjectile(node, type, 0.0f, 0.5f, textures);
-		createProjectile(node, type, +0.5f, 0.33f, textures);
-		break;
+		case 3:
+			createProjectile(node, type, -0.5f, 0.33f, textures);
+			createProjectile(node, type, 0.0f, 0.5f, textures);
+			createProjectile(node, type, +0.5f, 0.33f, textures);
+			break;
+		}
+	}
+	else
+	{
+		if (Aircraft::type == Aircraft::Raptor)
+		{
+			createProjectile(node, type, -0.99f, 0.33f, textures);
+			createProjectile(node, type, -0.66f, 0.33f, textures);
+			createProjectile(node, type, +0.99f, 0.33f, textures);
+			createProjectile(node, type, +0.66f, 0.33f, textures);
+		}
+		else if (Aircraft::type == Aircraft::Boss)
+		{
+			createProjectile(node, type, -0.99f, 0.33f, textures);
+			createProjectile(node, type, -0.66f, 0.33f, textures);
+			createProjectile(node, type, -0.33f, 0.33f, textures);
+			createProjectile(node, type, +0.33f, 0.33f, textures);
+			createProjectile(node, type, +0.99f, 0.33f, textures);
+			createProjectile(node, type, +0.66f, 0.33f, textures);
+		}
+		else if(Aircraft::type == Aircraft::Avenger)
+			createProjectile(node, type, 0.0f, 0.5f, textures);
 	}
 }
 
@@ -251,14 +276,20 @@ void Aircraft::updateTexts()
 	}
 }
 
-/*void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const
+void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const
 {
-auto type = static_cast<Pickup::Type>(randomInt(Pickup::TypeCount));
+	auto type = static_cast<Pickup::Type>(random(Pickup::TypeCount));
 
-std::unique_ptr<Pickup> pickup(new Pickup(type, textures));
-pickup->setPosition(getWorldPosition());
-pickup->setVelocity(0.f, 1.f);
-node.attachChild(std::move(pickup));
-}*/
+	std::unique_ptr<Pickup> pickup(new Pickup(type, textures));
+	pickup->setPosition(getWorldPosition());
+	pickup->setVelocity(0.f, 1.f);
+	node.attachChild(std::move(pickup));
+}
 
-
+int random(int max)
+{
+	auto seed = static_cast<unsigned long>(std::time(nullptr));
+	auto engine = std::default_random_engine(seed);
+	std::uniform_int_distribution<> distr(0, max - 1);
+	return distr(engine);
+}

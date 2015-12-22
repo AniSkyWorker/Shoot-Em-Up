@@ -18,7 +18,7 @@ namespace sf
 
 struct World : private sf::NonCopyable
 {
-	explicit World(sf::RenderWindow& window, FontHolder& fonts);
+	World(sf::RenderWindow& window, FontHolder& fonts);
 
 	void update(sf::Time dt);
 	void draw();
@@ -67,6 +67,12 @@ struct World : private sf::NonCopyable
 	void destroyEntitiesOutsideView();
 
 	void guideMissiles();
+
+	bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2);
+	void handleCollisions();
+
+	bool hasPlayerAlive();
+	bool hasPlayerReachedEnd();
 
 	std::vector<SpawnPoint> spawn_points;
 	sf::FloatRect getViewBounds();

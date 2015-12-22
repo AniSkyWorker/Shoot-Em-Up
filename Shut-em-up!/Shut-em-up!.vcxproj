@@ -151,8 +151,12 @@
     <ClInclude Include="Aircraft.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandQueue.h" />
-    <ClInclude Include="Data.h" />
+    <ClInclude Include="Data.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </ClInclude>
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="LoadingState.h" />
     <ClInclude Include="MenuState.h" />
@@ -160,6 +164,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="ParallelTask.h" />
     <ClInclude Include="PauseState.h" />
+    <ClInclude Include="Pickup.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ResourceIdientificators.h" />
@@ -181,12 +186,14 @@
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="ParallelTask.cpp" />
     <ClCompile Include="PauseState.cpp" />
+    <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneNode.cpp" />

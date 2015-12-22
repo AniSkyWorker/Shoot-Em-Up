@@ -1,4 +1,5 @@
 #pragma once
+
 #include <map>
 #include <string>
 #include <memory>
@@ -16,6 +17,7 @@ struct ResourceHolder
 			throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
 		insertResource(id, std::move(resource));
 	}
+
 	template< typename Parameter> void load(Identifier id, const std::string filename, const Parameter& parameter)
 	{
 		std::unique_ptr<Resource> resource(new Resource());
@@ -31,6 +33,7 @@ struct ResourceHolder
 
 		return *found->second;
 	}
+
 	const Resource&	get(Identifier id) const
 	{
 		auto found = resource_map.find(id);
@@ -38,6 +41,7 @@ struct ResourceHolder
 
 		return *found->second;
 	}
+
 	void insertResource(Identifier id, std::unique_ptr<Resource> resource)
 	{
 		auto inserted = resource_map.insert(std::make_pair(id, std::move(resource)));

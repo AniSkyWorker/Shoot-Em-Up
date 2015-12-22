@@ -1,7 +1,9 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "ResourceIdientificators.h"
+#include <SFML/Graphics.hpp>
+
 #include <vector>
+#include <functional>
 
 
 struct Aircraft;
@@ -9,8 +11,8 @@ struct Aircraft;
 struct Direction
 {
 	Direction(float angle, float distance)
-		: angle(angle)
-		, distance(distance)
+		:angle(angle)
+		,distance(distance)
 	{
 	}
 
@@ -20,21 +22,27 @@ struct Direction
 
 struct AircraftData
 {
-	int								hitpoints;
-	float							speed;
-	Textures::ID					texture;
-	sf::Time						fireInterval;
-	std::vector<Direction>			directions;
+	int	hitpoints;
+	float speed;
+	Textures::ID texture;
+	sf::Time fireInterval;
+	std::vector<Direction> directions;
 };
 
 struct ProjectileData
 {
-	int								damage;
-	float							speed;
-	Textures::ID					texture;
+	int	damage;
+	float speed;
+	Textures::ID texture;
 };
 
+struct PickupData
+{
+	std::function<void(Aircraft&)> action;
+	Textures::ID texture;
+};
 
-
-std::vector<AircraftData>	initializeAircraftData();
+std::vector<AircraftData> initializeAircraftData();
 std::vector<ProjectileData>	initializeProjectileData();
+std::vector<PickupData> initializePickupData();
+

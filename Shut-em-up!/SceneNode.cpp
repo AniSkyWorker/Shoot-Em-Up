@@ -51,7 +51,7 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	drawCurrent(target, states);
 	drawChildren(target, states);
 
-	drawBoundingRect(target, states);
+//	drawBoundingRect(target, states);
 }
 
 void SceneNode::drawCurrent(sf::RenderTarget&, sf::RenderStates) const
@@ -117,45 +117,44 @@ float distance(const SceneNode& lhs, const SceneNode& rhs)
 	return std::sqrt(lenght.x * lenght.x + lenght.y * lenght.y);
 }
 
-/*void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs)
+void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs)
 {
-	//checkNodeCollision(sceneGraph, collisionPairs);
-
-	//(Ptr& child, sceneGraph.children)
-	//checkSceneCollision(*child, collisionPairs);
+	checkNodeCollision(sceneGraph, collisionPairs);
+	
+	for (Ptr& child : sceneGraph.children)
+		checkSceneCollision(*child, collisionPairs);
 }
 
 void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs)
 {
-	//if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
-	//	collisionPairs.insert(std::minmax(this, &node));
-	//
-	//for(Ptr& child : children)
-	//	child->checkNodeCollision(node, collisionPairs);
+	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
+		collisionPairs.insert(std::minmax(this, &node));
+
+	if (getCategory() & Category::EnemyProjectile)
+		return;
+	for(Ptr& child : children)
+		child->checkNodeCollision(node, collisionPairs);
 }
 
 void SceneNode::removeWrecks()
 {
-	
 	auto wreckfieldBegin = std::remove_if(children.begin(), children.end(), std::mem_fn(&SceneNode::isMarkedForRemoval));
 	children.erase(wreckfieldBegin, children.end());
 
 	std::for_each(children.begin(), children.end(), std::mem_fn(&SceneNode::removeWrecks));
-}*/
-/*bool SceneNode::isMarkedForRemoval() const
+}
+
+bool SceneNode::isMarkedForRemoval() const
 {
-// By default, remove node if entity is destroyed
-//return isDestroyed();
+	return isDestroyed();
 }
 
 bool SceneNode::isDestroyed() const
 {
-// By default, scene node needn't be removed
-//return false;
+	return false;
 }
 
 bool collision(const SceneNode& lhs, const SceneNode& rhs)
 {
-// lhs.getBoundingRect().intersects(rhs.getBoundingRect());
+	return lhs.getBoundingRect().intersects(rhs.getBoundingRect());
 }
-*/

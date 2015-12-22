@@ -1,4 +1,5 @@
 #pragma once
+
 #include <functional>
 #include <cassert>
 #include <SFML\Graphics.hpp>
@@ -12,8 +13,8 @@ struct Command
 
 	Command();
 
-	Action						action;
-	unsigned int				category;
+	Action action;
+	unsigned int category;
 };
 
 template <typename GameObject, typename Function>

@@ -2,10 +2,10 @@
 #include "ResourceHolder.h"
 
 TitleState::TitleState(StateStack& stack, Context context)
-:State(stack, context)
-,text()
-,show_text(true)
-,show_text_time(sf::Time::Zero)
+	:State(stack, context)
+	,text()
+	,show_text(true)
+	,show_text_time(sf::Time::Zero)
 {
 	background_title.setTexture(context.textures->get(Textures::TitleScreen));
 

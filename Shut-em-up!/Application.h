@@ -25,6 +25,8 @@ struct Application
 	sf::Time statistics_update_time;
 	std::size_t	statistics_num_frames;
 
+	static const sf::Time	time_per_frame;
+
 	Player player;
 	StateStack state_stack;
 	TextureHolder textures;

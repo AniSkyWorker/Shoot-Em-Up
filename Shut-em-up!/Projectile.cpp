@@ -8,10 +8,10 @@ namespace
 }
 
 Projectile::Projectile(Type type, const TextureHolder& textures)
-	: Entity(1)
-	, type(type)
-	, sprite(textures.get(Table[type].texture))
-	, target_direction()
+	:Entity(1)
+	,type(type)
+	,sprite(textures.get(Table[type].texture))
+	,target_direction()
 {
 	sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().width / 2.f);
 }

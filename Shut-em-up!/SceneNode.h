@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <memory>
 #include <set>
@@ -26,12 +27,12 @@ struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::No
 	void callCommand(const Command& command, sf::Time dt);
 	virtual unsigned int getCategory() const;
 
-	//void checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs);
-	//void checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
-	//void removeWrecks();
+	void checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs);
+	void checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
+	void removeWrecks();
 	virtual sf::FloatRect getBoundingRect() const;
-	//virtual bool			isMarkedForRemoval() const;
-	//virtual bool			isDestroyed() const;
+	virtual bool isMarkedForRemoval() const;
+	virtual bool isDestroyed() const;
 
 	virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
 	void updateChildren(sf::Time dt, CommandQueue& commands);
@@ -45,4 +46,6 @@ struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::No
 	SceneNode* parent;
 	Category::Type default_category;
 };
+
 float distance(const SceneNode& lhs, const SceneNode& rhs);
+bool collision(const SceneNode& lhs, const SceneNode& rhs);

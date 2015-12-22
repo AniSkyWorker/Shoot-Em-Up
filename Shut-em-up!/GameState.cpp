@@ -1,46 +1,44 @@
 #include "GameState.h"
 
 GameState::GameState(StateStack& stack, Context context)
-	: State(stack, context)
-	, mWorld(*context.window, *context.fonts)
-	, mPlayer(*context.player)
+	:State(stack, context)
+	,world(*context.window, *context.fonts)
+	,player(*context.player)
 {
-	mPlayer.setMissionStatus(Player::MissionRunning);
+	player.setMissionStatus(Player::MissionRunning);
 }
 
 void GameState::draw()
 {
-	mWorld.draw();
+	world.draw();
 }
 
 bool GameState::update(sf::Time dt)
 {
-	mWorld.update(dt);
-
-	/*if (!mWorld.hasAlivePlayer())
+	world.update(dt);
+	
+	if (!world.hasPlayerAlive())
 	{
-		mPlayer.setMissionStatus(Player::MissionFailure);
-		requestStackPush(States::GameOver);
+		player.setMissionStatus(Player::MissionFailure);
+		requestStackPush(States::gameover);
 	}
-	else if (mWorld.hasPlayerReachedEnd())
+	else if (world.hasPlayerReachedEnd())
 	{
-		mPlayer.setMissionStatus(Player::MissionSuccess);
-		requestStackPush(States::GameOver);
-	}*/
+		player.setMissionStatus(Player::MissionSuccess);
+		requestStackPush(States::gameover);
+	}
 
-	CommandQueue& commands = mWorld.getCommandQueue();
-	mPlayer.handleRealtimeInput(commands);
+	CommandQueue& commands = world.getCommandQueue();
+	player.handleRealtimeInput(commands);
 
 	return true;
 }
 
 bool GameState::handleEvent(const sf::Event& event)
 {
-	// Game input handling
-	CommandQueue& commands = mWorld.getCommandQueue();
-	mPlayer.handleEvent(event, commands);
+	CommandQueue& commands = world.getCommandQueue();
+	player.handleEvent(event, commands);
 
-	// Escape pressed, trigger the pause screen
 	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 		requestStackPush(States::pause);
 

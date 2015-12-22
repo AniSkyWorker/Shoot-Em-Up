@@ -1,16 +1,15 @@
 #pragma once
 #include "State.h"
-#include "World.h"
-#include "Player.h"
 
-struct GameState : public State
+struct GameOverState : public State
 {
-	GameState(StateStack& stack, Context context);
+	GameOverState(StateStack& stack, Context context);
 
 	virtual void draw() override;
 	virtual bool update(sf::Time dt) override;
 	virtual bool handleEvent(const sf::Event& event) override;
 
-	World world;
-	Player&	player;
+	sf::Text text;
+	sf::Time elapsed_time;
 };
+

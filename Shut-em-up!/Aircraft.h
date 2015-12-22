@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "ResourceIdientificators.h"
 #include "Projectile.h"
+#include "Pickup.h"
 #include "TextNode.h"
 #include "Data.h"
 #include "Command.h"
@@ -12,6 +13,8 @@ struct Aircraft : public Entity
 	{
 		Eagle,
 		Raptor,
+		Avenger,
+		Boss,
 		TypeCount
 	};
 
@@ -25,24 +28,22 @@ struct Aircraft : public Entity
 	bool isAllied() const;
 	float getMaxSpeed() const;
 
-	//	virtual bool 			isMarkedForRemoval() const;
-	//	void					increaseFireRate();
-	//void					increaseSpread();
-	//	void					collectMissiles(unsigned int count);
+	virtual bool isMarkedForRemoval() const override;
+	void increaseFireRate();
+	void increaseSpread();
+	void collectMissiles(unsigned int count);
 
 	void fire();
 	void launchMissile();
-
 	void updateMovementPattern(sf::Time dt);
 	void checkProjectileLaunch(sf::Time dt, CommandQueue& commands);
 
 	void createBullets(SceneNode& node, const TextureHolder& textures) const;
 	void createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const;
-	//	void					checkPickupDrop(CommandQueue& commands);
-	//	void					createPickup(SceneNode& node, const TextureHolder& textures) const;
+	void checkPickupDrop(CommandQueue& commands);
+	void createPickup(SceneNode& node, const TextureHolder& textures) const;
 
 	void updateTexts();
-
 
 	Type type;
 	sf::Sprite sprite;
@@ -60,10 +61,13 @@ struct Aircraft : public Entity
 	int	spread_level;
 	int missile_ammo;
 
-	Command mDropPickupCommand;
+	Command pickup_command;
+
 	float travalled_distance;
 	std::size_t	direction_index;
+
 	TextNode* health_display;
 	TextNode* missile_display;
 };
 
+int random(int max);

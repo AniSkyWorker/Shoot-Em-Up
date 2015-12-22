@@ -2,9 +2,9 @@
 #include "ResourceHolder.h"
 
 MenuState::MenuState(StateStack& stack, Context context)
-:State(stack, context)
-,index(0)
-,options()
+	:State(stack, context)
+	,index(0)
+	,options()
 {
 	background_sprite.setTexture(context.textures->get(Textures::TitleScreen));
 

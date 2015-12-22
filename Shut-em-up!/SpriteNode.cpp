@@ -6,7 +6,7 @@ SpriteNode::SpriteNode(const sf::Texture& texture) : sprite(texture)
 }
 
 SpriteNode::SpriteNode(const sf::Texture& texture, const sf::IntRect& textureRect) 
-: sprite(texture, textureRect)
+	:sprite(texture, textureRect)
 {
 }
 
