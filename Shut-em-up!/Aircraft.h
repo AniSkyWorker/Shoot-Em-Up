@@ -69,5 +69,3 @@ struct Aircraft : public Entity
 	TextNode* health_display;
 	TextNode* missile_display;
 };
-
-int random(int max);

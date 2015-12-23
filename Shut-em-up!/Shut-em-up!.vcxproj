@@ -159,6 +159,7 @@
     <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="LoadingState.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="ObjectCategory.h" />
     <ClInclude Include="Application.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="ParallelTask.cpp" />
     <ClCompile Include="PauseState.cpp" />

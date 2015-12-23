@@ -74,6 +74,9 @@ struct World : private sf::NonCopyable
 	bool hasPlayerAlive();
 	bool hasPlayerReachedEnd();
 
+	void updatePlayerPosition();
+	void updatePlayerVelocity();
+
 	std::vector<SpawnPoint> spawn_points;
 	sf::FloatRect getViewBounds();
 	sf::FloatRect getBattlefieldBounds();

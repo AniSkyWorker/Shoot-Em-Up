@@ -2,9 +2,9 @@
 #include "ResourceHolder.h"
 #include "CommandQueue.h"
 #include "Data.h"
-
-#include <cmath>
+#include "Math.h"
 #include <iostream>
+#include <cmath>
 #include <random>
 #include <ctime>
 
@@ -160,20 +160,14 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 			direction_index = (direction_index + 1) % directions.size();
 			travalled_distance = 0.f;
 		}
-
-		float radians = 3.14f / 180.f * (directions[direction_index].angle + 90.f);
-		float vx = getMaxSpeed() * std::cos(radians);
-		float vy = getMaxSpeed() * std::sin(radians);
-
-		setVelocity(vx, vy);
-
+		setVelocity(Math::cartesian(getMaxSpeed(), directions[direction_index].angle));
 		travalled_distance += getMaxSpeed() * dt.asSeconds();
 	}
 }
 
 void Aircraft::checkPickupDrop(CommandQueue& commands)
 {
-	if (!isAllied() && random(2) == 0)
+	if (!isAllied() && Math::random(3) == 0)
 		commands.push(pickup_command);
 }
 
@@ -243,8 +237,10 @@ void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) con
 			createProjectile(node, type, +0.99f, 0.33f, textures);
 			createProjectile(node, type, +0.66f, 0.33f, textures);
 		}
-		else if(Aircraft::type == Aircraft::Avenger)
+		else if (Aircraft::type == Aircraft::Avenger)
+		{
 			createProjectile(node, type, 0.0f, 0.5f, textures);
+		}
 	}
 }
 
@@ -255,9 +251,8 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 	sf::Vector2f offset(xOffset * sprite.getGlobalBounds().width, yOffset * sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->getMaxSpeed());
 
-	float sign = isAllied() ? -1.f : +1.f;
-	projectile->setPosition(getWorldPosition() + offset * sign);
-	projectile->setVelocity(velocity * sign);
+	projectile->setPosition(getWorldPosition() + offset * Math::sign(isAllied()));
+	projectile->setVelocity(velocity * Math::sign(isAllied()));
 	node.attachChild(std::move(projectile));
 }
 
@@ -278,18 +273,10 @@ void Aircraft::updateTexts()
 
 void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const
 {
-	auto type = static_cast<Pickup::Type>(random(Pickup::TypeCount));
+	auto type = static_cast<Pickup::Type>(Math::random(Pickup::TypeCount));
 
 	std::unique_ptr<Pickup> pickup(new Pickup(type, textures));
 	pickup->setPosition(getWorldPosition());
 	pickup->setVelocity(0.f, 1.f);
 	node.attachChild(std::move(pickup));
-}
-
-int random(int max)
-{
-	auto seed = static_cast<unsigned long>(std::time(nullptr));
-	auto engine = std::default_random_engine(seed);
-	std::uniform_int_distribution<> distr(0, max - 1);
-	return distr(engine);
 }

@@ -111,12 +111,6 @@ sf::FloatRect SceneNode::getBoundingRect() const
 	return sf::FloatRect();
 }
 
-float distance(const SceneNode& lhs, const SceneNode& rhs)
-{
-	sf::Vector2f lenght = lhs.getWorldPosition() - rhs.getWorldPosition();
-	return std::sqrt(lenght.x * lenght.x + lenght.y * lenght.y);
-}
-
 void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs)
 {
 	checkNodeCollision(sceneGraph, collisionPairs);

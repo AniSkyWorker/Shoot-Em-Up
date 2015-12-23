@@ -47,5 +47,4 @@ struct SceneNode : public sf::Transformable, public sf::Drawable, private sf::No
 	Category::Type default_category;
 };
 
-float distance(const SceneNode& lhs, const SceneNode& rhs);
 bool collision(const SceneNode& lhs, const SceneNode& rhs);

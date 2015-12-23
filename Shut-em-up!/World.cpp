@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Projectile.h"
-#include <SFML/Graphics/RenderWindow.hpp>
+#include "Math.h"
+#include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <cmath>
 #include <memory>
@@ -29,28 +30,32 @@ World::World(sf::RenderWindow& window, FontHolder& fonts)
 void World::update(sf::Time dt)
 {
 	if (world_bounds.top - getBattlefieldBounds().top <= 50)
-	{
 		world_view.move(0.f, scroll_speed * dt.asSeconds());
-	}
 	else
 		scroll_speed = 0;
-	player_aircraft->setVelocity(0.f, 0.f);
-	destroyEntitiesOutsideView();
-	guideMissiles();
-	while (!command_queue.isEmpty())
-	{
-		scene_graph.callCommand(command_queue.pop(), dt);
-	}
 
-	sf::Vector2f velocity = player_aircraft->getVelocity();
-	if (velocity.x != 0.f && velocity.y != 0.f)
-		player_aircraft->setVelocity(velocity / std::sqrt(2.f));
-	player_aircraft->accelerate( 0.f, scroll_speed);
+	player_aircraft->setVelocity(0.f, 0.f);
+
+	destroyEntitiesOutsideView();
+
+	guideMissiles();
+
+	while (!command_queue.isEmpty())
+		scene_graph.callCommand(command_queue.pop(), dt);
+
+	updatePlayerVelocity();
+
 	handleCollisions();
 	scene_graph.removeWrecks();
+
 	spawnEnemies();
 	scene_graph.update(dt, command_queue);
-	
+
+	updatePlayerPosition();
+}
+
+void World::updatePlayerPosition()
+{
 	sf::FloatRect view_bounds(world_view.getCenter() - world_view.getSize() / 2.f, world_view.getSize());
 	float border_distance = 40.f;
 	sf::Vector2f position = player_aircraft->getPosition();
@@ -61,7 +66,14 @@ void World::update(sf::Time dt)
 	position.y = std::min(position.y, view_bounds.top + view_bounds.height - border_distance);
 
 	player_aircraft->setPosition(position);
-	
+}
+
+void World::updatePlayerVelocity()
+{
+	sf::Vector2f velocity = player_aircraft->getVelocity();
+	if (velocity.x != 0.f && velocity.y != 0.f)
+		player_aircraft->setVelocity(velocity / std::sqrt(2.f));
+	player_aircraft->accelerate(0.f, scroll_speed);
 }
 
 void World::draw()
@@ -206,7 +218,7 @@ void World::guideMissiles()
 
 		for(Aircraft* enemy : enemies)
 		{
-			float enemy_dist = distance(missile, *enemy);
+			float enemy_dist = Math::distance(missile.getWorldPosition(), enemy->getWorldPosition());
 
 			if (enemy_dist < min_dist)
 			{

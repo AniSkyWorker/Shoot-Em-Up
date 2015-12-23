@@ -16,8 +16,6 @@ struct Entity : public SceneNode
 	void damage(int points);
 	void destroy();
 	virtual bool isDestroyed() const override;
-
-
 	virtual void updateCurrent(sf::Time dt, CommandQueue& commands) override;
 
 	sf::Vector2f velocity;
