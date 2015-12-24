@@ -14,7 +14,7 @@ float Math::to_radian(float angle)
 
 float Math::to_degree(float radian)
 {
-	return 180.f / M_PI * radian;
+	return 180.f / M_PI * radian + 90.f;
 }
 
 float Math::sign(bool value)
@@ -34,4 +34,14 @@ float Math::distance(sf::Vector2f& lhs, sf::Vector2f& rhs)
 {
 	sf::Vector2f lenght = lhs - rhs;
 	return std::sqrt(lenght.x * lenght.x + lenght.y * lenght.y);
+}
+
+sf::Vector2f Math::normalized(sf::Vector2f vec)
+{
+	return vec / std::sqrt(vec.x * vec.x + vec.y * vec.y);
+}
+
+float Math::polarAngle(sf::Vector2f vec)
+{
+	return to_degree(std::atan2(vec.y, vec.x));
 }

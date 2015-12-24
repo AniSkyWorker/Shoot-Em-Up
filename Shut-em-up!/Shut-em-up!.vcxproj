@@ -164,10 +164,12 @@
     <ClInclude Include="ObjectCategory.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ParallelTask.h" />
+    <ClInclude Include="ParticleNode.h" />
     <ClInclude Include="PauseState.h" />
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="ResourceIdientificators.h" />
     <ClInclude Include="SceneNode.h" />
     <ClInclude Include="SpriteNode.h" />
@@ -194,6 +196,7 @@
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="ParallelTask.cpp" />
+    <ClCompile Include="ParticleNode.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="Player.cpp" />

@@ -1,6 +1,7 @@
 #include "Projectile.h"
 #include "Data.h"
 #include "ResourceHolder.h"
+#include "Math.h"
 
 namespace
 {
@@ -20,12 +21,12 @@ void Projectile::guideTowards(sf::Vector2f position)
 {
 	assert(isGuided());
 	sf::Vector2f unit_vector = position - getWorldPosition();
-	target_direction = unit_vector / std::sqrt(unit_vector.x * unit_vector.x + unit_vector.y* unit_vector.y);
+	target_direction = Math::normalized(unit_vector);
 }
 
 bool Projectile::isGuided() const
 {
-return type == Missile;
+	return type == Missile;
 }
 
 void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
@@ -34,11 +35,9 @@ void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
 	{
 		const float approachRate = 200.f;
 		sf::Vector2f unit_vector = (approachRate * dt.asSeconds() * target_direction + getVelocity());
-		sf::Vector2f new_velocity = unit_vector / std::sqrt(unit_vector.x * unit_vector.x + unit_vector.y* unit_vector.y);;
+		sf::Vector2f new_velocity = Math::normalized(unit_vector);
 		new_velocity *= getMaxSpeed();
-		float angle = std::atan2(new_velocity.y, new_velocity.x);
-
-		setRotation(180.f / 3.14f * angle + 90.f);
+		setRotation(Math::polarAngle(new_velocity));
 		setVelocity(new_velocity);
 	}
 
@@ -50,12 +49,11 @@ void Projectile::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) 
 	target.draw(sprite, states);
 }
 
-unsigned int Projectile::getCategory() const
+unsigned Projectile::getCategory() const
 {
 	if (type == EnemyBullet)
 		return Category::EnemyProjectile;
-	else
-		return Category::AlliedProjectile;
+	return Category::AlliedProjectile;
 }
 
 sf::FloatRect Projectile::getBoundingRect() const

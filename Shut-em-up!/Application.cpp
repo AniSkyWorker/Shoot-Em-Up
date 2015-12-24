@@ -75,28 +75,27 @@ void Application::update(sf::Time dt)
 }
 
 void Application::render()
-	{
-		window.clear();
-		state_stack.draw();
-		window.setView(window.getDefaultView());
-		window.draw(statistics_text);
-		window.display();
-	}
+{
+	window.clear();
+	state_stack.draw();
+	window.setView(window.getDefaultView());
+	window.draw(statistics_text);
+	window.display();
+}
 void Application::updateStatistics(sf::Time elapsed_time)
+{
+	statistics_update_time += elapsed_time;
+	statistics_num_frames += 1;
+
+	if (statistics_update_time >= sf::seconds(1.0f))
 	{
+		statistics_text.setString("FPS = " + std::to_string(statistics_num_frames));
 
-		statistics_update_time += elapsed_time;
-		statistics_num_frames += 1;
-
-		if (statistics_update_time >= sf::seconds(1.0f))
-		{
-			statistics_text.setString("FPS = " + std::to_string(statistics_num_frames));
-
-			statistics_update_time -= sf::seconds(1.0f);
-			statistics_num_frames = 0;
+		statistics_update_time -= sf::seconds(1.0f);
+		statistics_num_frames = 0;
 		
-		}
 	}
+}
 void Application::registerStates()
 {
 	state_stack.registerState<GameState>(States::game);
