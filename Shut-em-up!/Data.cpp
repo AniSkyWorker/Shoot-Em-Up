@@ -2,6 +2,7 @@
 #include "Aircraft.h"
 #include "Projectile.h"
 #include "Pickup.h"
+#include "Particle.h"
 
 using namespace std::placeholders;
 
@@ -9,20 +10,20 @@ std::vector<AircraftData> initializeAircraftData()
 {
 	std::vector<AircraftData> data(Aircraft::TypeCount);
 
-	data[Aircraft::Eagle].hitpoints = 100;
+	data[Aircraft::Eagle].hitpoints = 250;
 	data[Aircraft::Eagle].speed = 200.f;
 	data[Aircraft::Eagle].fireInterval = sf::seconds(1);
 	data[Aircraft::Eagle].texture = Textures::Eagle;
 
-	data[Aircraft::Raptor].hitpoints = 20;
-	data[Aircraft::Raptor].speed = 100.f;
+	data[Aircraft::Raptor].hitpoints = 100;
+	data[Aircraft::Raptor].speed = 80.f;
 	data[Aircraft::Raptor].texture = Textures::Raptor;
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(-45.f, 160.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Aircraft::Raptor].fireInterval = sf::seconds(3);
 
-	data[Aircraft::Avenger].hitpoints = 40;
+	data[Aircraft::Avenger].hitpoints = 50;
 	data[Aircraft::Avenger].speed = 50.f;
 	data[Aircraft::Avenger].texture = Textures::Avenger;
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
@@ -32,7 +33,7 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Aircraft::Avenger].fireInterval = sf::seconds(3);
 
-	data[Aircraft::Boss].hitpoints = 333.f;
+	data[Aircraft::Boss].hitpoints = 500;
 	data[Aircraft::Boss].speed = 150.f;
 	data[Aircraft::Boss].texture = Textures::Raptor;
 	data[Aircraft::Boss].directions.push_back(Direction(90.f, 300.f));
@@ -68,7 +69,7 @@ std::vector<PickupData> initializePickupData()
 	std::vector<PickupData> data(Pickup::TypeCount);
 
 	data[Pickup::HealthRefill].texture = Textures::Health;
-	data[Pickup::HealthRefill].action = [](Aircraft& a) { if (a.getHitpoints() < 150.f) a.repair(25); };
+	data[Pickup::HealthRefill].action = [](Aircraft& a) { if (a.getHitpoints() < 250.f) a.repair(25); };
 
 	data[Pickup::MissileRefill].texture = Textures::MissilePick;
 	data[Pickup::MissileRefill].action = std::bind(&Aircraft::collectMissiles, _1, 3);
@@ -78,6 +79,20 @@ std::vector<PickupData> initializePickupData()
 
 	data[Pickup::FireRate].texture = Textures::FireRate;
 	data[Pickup::FireRate].action = std::bind(&Aircraft::increaseFireRate, _1);
+
+	return data;
+}
+
+std::vector<ParticleData> initializeParticleData()
+{
+	std::vector<ParticleData> data(Particle::ParticleCount);
+
+	data[Particle::Propellant].color = sf::Color(255, 255, 50);
+	data[Particle::Propellant].lifetime = sf::seconds(0.8f);
+
+	data[Particle::Smoke].color = sf::Color(50, 50, 50);
+	data[Particle::Smoke].lifetime = sf::seconds(4.f);
+
 
 	return data;
 }

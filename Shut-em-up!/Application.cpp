@@ -11,7 +11,7 @@
 const sf::Time Application::time_per_frame = sf::seconds(1.f / 60.f);
 
 Application::Application() 
-	:window(sf::VideoMode(640, 480), "Shoot them!!!", sf::Style::Close)
+	:window(sf::VideoMode(1024, 760), "Shoot them!!!", sf::Style::Close)
 	,textures()
 	,fonts()
 	,player()
@@ -19,8 +19,12 @@ Application::Application()
 	,statistics_num_frames(0)
 	,state_stack(State::Context(window, textures, fonts, player))
 {
+	window.setKeyRepeatEnabled(false);
 	fonts.load(Fonts::Main, "Media/Sansation.ttf");
 	textures.load(Textures::TitleScreen, "Media/Textures/TitleScreen.jpg");
+	textures.load(Textures::ButtonNormal, "Media/Textures/ButtonNormal.png");
+	textures.load(Textures::ButtonPressed, "Media/Textures/ButtonPressed.png");
+	textures.load(Textures::ButtonSelected, "Media/Textures/ButtonSelected.png");
 
 	statistics_text.setFont(fonts.get(Fonts::Main));
 	statistics_text.setPosition(5.f, 5.f);

@@ -124,8 +124,6 @@ void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPai
 	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
 		collisionPairs.insert(std::minmax(this, &node));
 
-	if (getCategory() & Category::EnemyProjectile)
-		return;
 	for(Ptr& child : children)
 		child->checkNodeCollision(node, collisionPairs);
 }

@@ -21,17 +21,26 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,fire_countdown(sf::Time::Zero)
 	,is_firing(false)
 	,is_missile_launch(false)
-	,is_marked_for_remove(false)
 	,sprite(textures.get(Table[type].texture))
 	,fire_rate(1)
 	,spread_level(1)
-	,missile_ammo(5)
+	,missile_ammo(10)
+	,show_explosion(true)
+	,spawned_pickup(false)
 	,pickup_command()
 	,travalled_distance(0.f)
 	,direction_index(0)
 	,missile_display(nullptr)
 	,health_display(nullptr)
+	,explosion(textures.get(Textures::Explosion))
 {
+	explosion.setFrameSize(sf::Vector2i(256, 256));
+	explosion.setNumFrames(16);
+	explosion.setScale(1.1f, 1.1f);
+	explosion.setDuration(sf::seconds(1.2f));
+	explosion.setPosition(0.f, -100.f);
+
+	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 	sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 
 	fire_command.category = Category::SceneAirLayer;
@@ -52,12 +61,13 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 		createPickup(node, textures);
 	};
 
-	std::unique_ptr<TextNode> health(new TextNode(fonts, ""));
-	health_display = health.get();
-	attachChild(std::move(health));
 
 	if (getCategory() == Category::PlayerAircraft)
 	{
+		std::unique_ptr<TextNode> health(new TextNode(fonts, ""));
+		health_display = health.get();
+		attachChild(std::move(health));
+
 		std::unique_ptr<TextNode> missile(new TextNode(fonts, ""));
 		missile->setPosition(0, 70);
 		missile_display = missile.get();
@@ -70,6 +80,8 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(sprite, states);
+	if (isDestroyed() && show_explosion)
+		target.draw(explosion, states);
 }
 
 void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
@@ -77,8 +89,7 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	if (isDestroyed())
 	{
 		checkPickupDrop(commands);
-
-		is_marked_for_remove = true;
+		explosion.update(dt);
 		return;
 	}
 
@@ -105,7 +116,13 @@ sf::FloatRect Aircraft::getBoundingRect() const
 
 bool Aircraft::isMarkedForRemoval() const
 {
-	return is_marked_for_remove;
+	return isDestroyed() && (explosion.isFinished() || !show_explosion);
+}
+
+void Aircraft::remove()
+{
+	Entity::remove();
+	show_explosion = false;
 }
 
 bool Aircraft::isAllied() const
@@ -167,8 +184,9 @@ void Aircraft::updateMovementPattern(sf::Time dt)
 
 void Aircraft::checkPickupDrop(CommandQueue& commands)
 {
-	if (!isAllied() && Math::random(3) == 0)
+	if (!isAllied() && Math::random(3) == 0 && !spawned_pickup)
 		commands.push(pickup_command);
+	spawned_pickup = true;
 }
 
 void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
@@ -224,18 +242,18 @@ void Aircraft::createBullets(SceneNode& node, const TextureHolder& textures) con
 		if (Aircraft::type == Aircraft::Raptor)
 		{
 			createProjectile(node, type, -0.99f, 0.33f, textures);
-			createProjectile(node, type, -0.66f, 0.33f, textures);
-			createProjectile(node, type, +0.99f, 0.33f, textures);
+			createProjectile(node, type, -0.66f, 0.5f, textures);
+			createProjectile(node, type, +0.99f, 0.5f, textures);
 			createProjectile(node, type, +0.66f, 0.33f, textures);
 		}
 		else if (Aircraft::type == Aircraft::Boss)
 		{
-			createProjectile(node, type, -0.99f, 0.33f, textures);
+			createProjectile(node, type, -0.99f, 0.22f, textures);
 			createProjectile(node, type, -0.66f, 0.33f, textures);
-			createProjectile(node, type, -0.33f, 0.33f, textures);
-			createProjectile(node, type, +0.33f, 0.33f, textures);
+			createProjectile(node, type, -0.33f, 0.5f, textures);
+			createProjectile(node, type, +0.33f, 0.5f, textures);
 			createProjectile(node, type, +0.99f, 0.33f, textures);
-			createProjectile(node, type, +0.66f, 0.33f, textures);
+			createProjectile(node, type, +0.66f, 0.22f, textures);
 		}
 		else if (Aircraft::type == Aircraft::Avenger)
 		{
@@ -250,7 +268,10 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 
 	sf::Vector2f offset(xOffset * sprite.getGlobalBounds().width, yOffset * sprite.getGlobalBounds().height);
 	sf::Vector2f velocity(0, projectile->getMaxSpeed());
-
+	if (!isAllied())
+	{
+		projectile->setRotation(180.f);
+	}
 	projectile->setPosition(getWorldPosition() + offset * Math::sign(isAllied()));
 	projectile->setVelocity(velocity * Math::sign(isAllied()));
 	node.attachChild(std::move(projectile));
@@ -258,9 +279,12 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 
 void Aircraft::updateTexts()
 {
-	health_display->setString(std::to_string(getHitpoints()) + " HP");
-	health_display->setPosition(0.f, 50.f);
-	health_display->setRotation(-getRotation());
+	if (health_display)
+	{
+		health_display->setString(std::to_string(getHitpoints()) + " HP");
+		health_display->setPosition(0.f, 50.f);
+		health_display->setRotation(-getRotation());
+	}
 
 	if (missile_display)
 	{

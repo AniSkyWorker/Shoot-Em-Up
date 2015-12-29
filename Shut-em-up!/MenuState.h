@@ -1,25 +1,20 @@
 #pragma once
+
 #include "State.h"
-#include "SFML\Graphics.hpp"
+#include "Container.h"
 
-struct MenuState: public State
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+
+struct MenuState : public State
 {
-	enum OptionNames
-	{
-		Play,
-		Exit,
-	};
-	
-	MenuState(StateStack& stack, Context context);
+		MenuState(StateStack& stack, Context context);
 
-	virtual void draw() override;
-	virtual bool update(sf::Time dt) override;
-	virtual bool handleEvent(const sf::Event& event) override;
+		virtual void draw() override;
+		virtual bool update(sf::Time dt) override;
+		virtual bool handleEvent(const sf::Event& event);
 
-	void updateOptionText();
-
-	sf::Sprite background_sprite;
-	std::vector<sf::Text> options;
-	std::size_t index;
+		sf::Sprite background_sprite;
+		GUI::Container GUI_container;
 };
 

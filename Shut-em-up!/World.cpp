@@ -6,6 +6,7 @@
 #include <cmath>
 #include <memory>
 #include <iostream>
+#include "ParticleNode.h"
 
 World::World(sf::RenderWindow& window, FontHolder& fonts) 
 	:world_window(window)
@@ -14,7 +15,7 @@ World::World(sf::RenderWindow& window, FontHolder& fonts)
 	,scene_graph()
 	,enemies()
 	,scene_layers()
-	,world_bounds(0.f , 0.f, world_view.getSize().x , 2000.f)
+	,world_bounds(0.f , 0.f, world_view.getSize().x , 5000.f)
 	,player_position(world_view.getSize().x / 2, world_bounds.height - (world_view.getSize().y / 2))
 	,scroll_speed(-50)
 	,player_aircraft(nullptr)
@@ -87,14 +88,16 @@ void World::loadTextures()
 	textures.load(Textures::Eagle, "Media/textures/Eagle.png");
 	textures.load(Textures::Raptor, "Media/textures/Raptor.png");
 	textures.load(Textures::Avenger, "Media/textures/Avenger.png");
-	textures.load(Textures::Desert, "Media/textures/Desert.png");
+	textures.load(Textures::Desert, "Media/textures/Jungle.png");
 	textures.load(Textures::Bullets, "Media/textures/Bullet.png");
 	textures.load(Textures::Missile, "Media/textures/Missile.png");
-
+	textures.load(Textures::Particle, "Media/textures/Particle.png");
+	textures.load(Textures::Explosion, "Media/Textures/Explosion.png");
 	textures.load(Textures::Health, "Media/Textures/HealthRefill.png");
 	textures.load(Textures::MissilePick, "Media/Textures/MissileRefill.png");
 	textures.load(Textures::FireSpread, "Media/Textures/FireSpread.png");
 	textures.load(Textures::FireRate, "Media/Textures/FireRate.png");
+	
 }
 
 void World::buildScene()
@@ -120,6 +123,13 @@ void World::buildScene()
 	player_aircraft = player.get();
 	player_aircraft ->setPosition(player_position);
 	scene_layers[aircraft]->attachChild(std::move(player));
+
+	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(Particle::Smoke, textures));
+	scene_layers[aircraft]->attachChild(std::move(smokeNode));
+	 
+	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, textures));
+	scene_layers[aircraft]->attachChild(std::move(propellantNode));
+
 
 	addEnemies();
 }
@@ -163,18 +173,34 @@ void World::addEnemy(Aircraft::Type type, float x, float y)
 
 void World::addEnemies()
 {
-	addEnemy(Aircraft::Avenger, 0.f, 500.f);
-	addEnemy(Aircraft::Avenger, -40.f, 700.f);
-	addEnemy(Aircraft::Raptor, 100.f, 800.f);
-	addEnemy(Aircraft::Avenger, 0.f, 1000.f);
-	addEnemy(Aircraft::Raptor, +200.f, 1500.f);
-	addEnemy(Aircraft::Avenger, 0.f, 1500.f);
-	addEnemy(Aircraft::Raptor, -200.f, 1500.f);
-	addEnemy(Aircraft::Raptor, -70.f, 1700.f);
-	addEnemy(Aircraft::Raptor, -70.f, 1700.f);
-	addEnemy(Aircraft::Raptor, 250.f, 1800.f);
-	addEnemy(Aircraft::Raptor, 70.f, 1800.f);
-	addEnemy(Aircraft::Boss, 0.f, 1700.f);
+	addEnemy(Aircraft::Raptor, 0.f, 500.f);
+	addEnemy(Aircraft::Raptor, 0.f, 1000.f);
+	addEnemy(Aircraft::Raptor, +100.f, 1150.f);
+	addEnemy(Aircraft::Raptor, -100.f, 1150.f);
+	addEnemy(Aircraft::Avenger, 70.f, 1500.f);
+	addEnemy(Aircraft::Avenger, -70.f, 1500.f);
+	addEnemy(Aircraft::Avenger, -70.f, 1710.f);
+	addEnemy(Aircraft::Avenger, 70.f, 1700.f);
+	addEnemy(Aircraft::Avenger, 30.f, 1850.f);
+	addEnemy(Aircraft::Raptor, 300.f, 2200.f);
+	addEnemy(Aircraft::Raptor, -300.f, 2200.f);
+	addEnemy(Aircraft::Raptor, 0.f, 2200.f);
+	addEnemy(Aircraft::Raptor, 0.f, 2500.f);
+	addEnemy(Aircraft::Avenger, -300.f, 2700.f);
+	addEnemy(Aircraft::Avenger, -300.f, 2700.f);
+	addEnemy(Aircraft::Raptor, 0.f, 3000.f);
+	addEnemy(Aircraft::Raptor, 250.f, 3250.f);
+	addEnemy(Aircraft::Raptor, -250.f, 3250.f);
+	addEnemy(Aircraft::Avenger, 0.f, 3500.f);
+	addEnemy(Aircraft::Avenger, 250.f, 3500.f);
+	addEnemy(Aircraft::Avenger, -250.f, 3500.f);
+	addEnemy(Aircraft::Avenger, 0.f, 3700.f);
+	addEnemy(Aircraft::Raptor, 0.f, 3800.f);
+	addEnemy(Aircraft::Avenger, 0.f, 4000.f);
+	addEnemy(Aircraft::Avenger, -200.f, 4200.f);
+	addEnemy(Aircraft::Raptor, 200.f, 4200.f);
+	addEnemy(Aircraft::Raptor, 0.f, 4400.f);
+	addEnemy(Aircraft::Boss, 0.f, 4400.f);
 	std::sort(spawn_points.begin(), spawn_points.end(), [](SpawnPoint lhs, SpawnPoint rhs)
 	{
 		return lhs.y < rhs.y;

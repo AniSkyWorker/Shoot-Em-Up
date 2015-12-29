@@ -13,14 +13,23 @@ namespace Textures
 		Eagle,
 		Raptor,
 		Avenger,
+
 		Bullets,
 		Missile,
+
 		Desert,
+
 		TitleScreen,
+
 		Health,
+		Particle,
 		MissilePick,
 		FireRate,
-		FireSpread
+		FireSpread,
+		Explosion,
+		ButtonNormal,
+		ButtonPressed,
+		ButtonSelected
 	};
 }
 

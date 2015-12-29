@@ -6,6 +6,7 @@
 #include "TextNode.h"
 #include "Data.h"
 #include "Command.h"
+#include "Animation.h"
 
 struct Aircraft : public Entity
 {
@@ -28,6 +29,7 @@ struct Aircraft : public Entity
 	bool isAllied() const;
 	float getMaxSpeed() const;
 
+	virtual void remove() override;
 	virtual bool isMarkedForRemoval() const override;
 	void increaseFireRate();
 	void increaseSpread();
@@ -55,17 +57,21 @@ struct Aircraft : public Entity
 
 	bool is_firing;
 	bool is_missile_launch;
-	bool is_marked_for_remove;
 
 	int	fire_rate;
 	int	spread_level;
 	int missile_ammo;
 
 	Command pickup_command;
+	bool spawned_pickup;
 
 	float travalled_distance;
 	std::size_t	direction_index;
 
 	TextNode* health_display;
 	TextNode* missile_display;
+
+	Animation explosion;
+	bool show_explosion;
+	
 };
