@@ -12,35 +12,44 @@ std::vector<AircraftData> initializeAircraftData()
 
 	data[Aircraft::Eagle].hitpoints = 250;
 	data[Aircraft::Eagle].speed = 200.f;
-	data[Aircraft::Eagle].fireInterval = sf::seconds(1);
+	data[Aircraft::Eagle].fire_interval = sf::seconds(1);
+	data[Aircraft::Eagle].missile_interval = sf::seconds(1);
 	data[Aircraft::Eagle].texture = Textures::Eagle;
+	data[Aircraft::Eagle].texture_rect = sf::IntRect(0, 0, 48, 64);
+	data[Aircraft::Eagle].roll_animation = true;
 
 	data[Aircraft::Raptor].hitpoints = 100;
 	data[Aircraft::Raptor].speed = 80.f;
 	data[Aircraft::Raptor].texture = Textures::Raptor;
+	data[Aircraft::Raptor].texture_rect = sf::IntRect(0, 0, 84, 68);
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(-45.f, 160.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
-	data[Aircraft::Raptor].fireInterval = sf::seconds(3);
+	data[Aircraft::Raptor].fire_interval = sf::seconds(3);
+	data[Aircraft::Raptor].roll_animation = true;
 
 	data[Aircraft::Avenger].hitpoints = 50;
 	data[Aircraft::Avenger].speed = 50.f;
 	data[Aircraft::Avenger].texture = Textures::Avenger;
+	data[Aircraft::Avenger].texture_rect = sf::IntRect(0, 0, 60, 59);
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Aircraft::Avenger].directions.push_back(Direction(0.f, 50.f)); 
 	data[Aircraft::Avenger].directions.push_back(Direction(-45.f, 100.f));
 	data[Aircraft::Avenger].directions.push_back(Direction(0.f, 50.f));
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
-	data[Aircraft::Avenger].fireInterval = sf::seconds(3);
+	data[Aircraft::Avenger].fire_interval = sf::seconds(3);
+	data[Aircraft::Avenger].roll_animation = false;
 
 	data[Aircraft::Boss].hitpoints = 500;
 	data[Aircraft::Boss].speed = 150.f;
 	data[Aircraft::Boss].texture = Textures::Raptor;
+	data[Aircraft::Boss].texture_rect = sf::IntRect(0, 0, 84, 68);
 	data[Aircraft::Boss].directions.push_back(Direction(90.f, 300.f));
 	data[Aircraft::Boss].directions.push_back(Direction(-90.f, 300.f));
 	data[Aircraft::Boss].directions.push_back(Direction(-90.f, 300.f));
 	data[Aircraft::Boss].directions.push_back(Direction(90.f, 300.f));
-	data[Aircraft::Boss].fireInterval = sf::seconds(2);
+	data[Aircraft::Boss].fire_interval = sf::seconds(2);
+	data[Aircraft::Boss].roll_animation = false;
 
 	return data;
 }

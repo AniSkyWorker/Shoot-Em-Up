@@ -19,9 +19,10 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,fire_command()
 	,missile_command()
 	,fire_countdown(sf::Time::Zero)
+	,missile_countdown(sf::Time::Zero)
 	,is_firing(false)
 	,is_missile_launch(false)
-	,sprite(textures.get(Table[type].texture))
+	,sprite(textures.get(Table[type].texture), Table[type].texture_rect)
 	,fire_rate(1)
 	,spread_level(1)
 	,missile_ammo(10)
@@ -86,7 +87,10 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 
 void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	if (isDestroyed())
+	updateTexts();
+	updateRollAnimation();
+
+	if(isDestroyed())
 	{
 		checkPickupDrop(commands);
 		explosion.update(dt);
@@ -97,8 +101,6 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 
 	updateMovementPattern(dt);
 	Entity::updateCurrent(dt, commands);
-
-	updateTexts();
 }
 
 unsigned int Aircraft::getCategory() const
@@ -154,17 +156,14 @@ void Aircraft::collectMissiles(unsigned int count)
 
 void Aircraft::fire()
 {
-	if (Table[type].fireInterval != sf::Time::Zero)
+	if (Table[type].fire_interval != sf::Time::Zero)
 		is_firing = true;
 }
 
 void Aircraft::launchMissile()
 {
 	if (missile_ammo > 0)
-	{
 		is_missile_launch = true;
-		--missile_ammo;
-	}
 }
 
 void Aircraft::updateMovementPattern(sf::Time dt)
@@ -197,7 +196,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	if (is_firing && fire_countdown <= sf::Time::Zero)
 	{
 		commands.push(fire_command);
-		fire_countdown += Table[type].fireInterval / (fire_rate + 1.f);
+		fire_countdown += Table[type].fire_interval / (fire_rate + 1.f);
 		is_firing = false;
 	}
 	else if (fire_countdown > sf::Time::Zero)
@@ -206,9 +205,16 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 		is_firing = false;
 	}
 
-	if (is_missile_launch)
+	if (is_missile_launch && missile_countdown <= sf::Time::Zero)
 	{
+		--missile_ammo;
 		commands.push(missile_command);
+		missile_countdown += Table[type].missile_interval / (fire_rate + 1.f);
+		is_missile_launch = false;
+	}
+	else if (missile_countdown > sf::Time::Zero)
+	{
+		missile_countdown -= dt;
 		is_missile_launch = false;
 	}
 }
@@ -303,4 +309,19 @@ void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) cons
 	pickup->setPosition(getWorldPosition());
 	pickup->setVelocity(0.f, 1.f);
 	node.attachChild(std::move(pickup));
+}
+
+void Aircraft::updateRollAnimation()
+{
+	if (Table[type].roll_animation)
+	{
+		sf::IntRect textureRect = Table[type].texture_rect;
+
+		if (getVelocity().x < 0.f)
+			textureRect.left += textureRect.width;
+		else if (getVelocity().x > 0.f)
+			textureRect.left += 2 * textureRect.width;
+
+		sprite.setTextureRect(textureRect);
+	}
 }

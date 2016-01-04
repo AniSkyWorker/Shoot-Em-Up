@@ -19,8 +19,9 @@ GameOverState::GameOverState(StateStack& stack, Context context)
 		text.setString("Mission failed!");
 	else
 		text.setString("Mission successful!");
+	text.setString(text.getString() + "\npress Enter to return to main menu");
 
-	text.setCharacterSize(70);
+	text.setCharacterSize(50);
 	text.setOrigin(text.getGlobalBounds().width / 2.f, text.getGlobalBounds().height / 2.f);
 	text.setPosition(0.5f * windowSize.x, 0.4f * windowSize.y);
 }
@@ -40,16 +41,16 @@ void GameOverState::draw()
 
 bool GameOverState::update(sf::Time dt)
 {
-	elapsed_time += dt;
-	if (elapsed_time > sf::seconds(5))
-	{
-		requestStateClear();
-		requestStackPush(States::menu);
-	}
 	return false;
 }
 
-bool GameOverState::handleEvent(const sf::Event&)
+bool GameOverState::handleEvent(const sf::Event&event)
 {
+	if(event.type == sf::Event::KeyReleased)
+		if (event.key.code == sf::Keyboard::Return)
+		{
+			requestStateClear();
+			requestStackPush(States::menu);
+		}
 	return false;
 }

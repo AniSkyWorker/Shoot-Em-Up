@@ -54,6 +54,7 @@ struct Aircraft : public Entity
 	Command missile_command;
 
 	sf::Time fire_countdown;
+	sf::Time missile_countdown;
 
 	bool is_firing;
 	bool is_missile_launch;
@@ -73,5 +74,7 @@ struct Aircraft : public Entity
 
 	Animation explosion;
 	bool show_explosion;
+
+	void updateRollAnimation();
 	
 };
