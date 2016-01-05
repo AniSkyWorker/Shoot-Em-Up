@@ -12,7 +12,7 @@ std::vector<AircraftData> initializeAircraftData()
 
 	data[Aircraft::Eagle].hitpoints = 250;
 	data[Aircraft::Eagle].speed = 200.f;
-	data[Aircraft::Eagle].fire_interval = sf::seconds(1);
+	data[Aircraft::Eagle].fire_interval = sf::seconds(0.2f);
 	data[Aircraft::Eagle].missile_interval = sf::seconds(1);
 	data[Aircraft::Eagle].texture = Textures::Eagle;
 	data[Aircraft::Eagle].texture_rect = sf::IntRect(0, 0, 48, 64);
@@ -25,6 +25,7 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(-45.f, 160.f));
 	data[Aircraft::Raptor].directions.push_back(Direction(+45.f, 80.f));
+	data[Aircraft::Raptor].missile_interval = sf::seconds(10);
 	data[Aircraft::Raptor].fire_interval = sf::seconds(3);
 	data[Aircraft::Raptor].roll_animation = true;
 
@@ -39,6 +40,7 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Avenger].directions.push_back(Direction(+45.f, 50.f));
 	data[Aircraft::Avenger].fire_interval = sf::seconds(3);
 	data[Aircraft::Avenger].roll_animation = false;
+	data[Aircraft::Avenger].missile_interval = sf::Time::Zero;
 
 	data[Aircraft::Boss].hitpoints = 500;
 	data[Aircraft::Boss].speed = 150.f;
@@ -58,17 +60,21 @@ std::vector<ProjectileData> initializeProjectileData()
 {
 	std::vector<ProjectileData> data(Projectile::TypeCount);
 
-	data[Projectile::AlliedBullet].damage = 10;
+	data[Projectile::AlliedBullet].damage = 5;
 	data[Projectile::AlliedBullet].speed = 300.f;
 	data[Projectile::AlliedBullet].texture = Textures::Bullets;
 
-	data[Projectile::EnemyBullet].damage = 5;
+	data[Projectile::EnemyBullet].damage = 10;
 	data[Projectile::EnemyBullet].speed = 250.f;
 	data[Projectile::EnemyBullet].texture = Textures::Bullets;
 
-	data[Projectile::Missile].damage = 50;
-	data[Projectile::Missile].speed = 150.f;
-	data[Projectile::Missile].texture = Textures::Missile;
+	data[Projectile::AlliedMissile].damage = 50;
+	data[Projectile::AlliedMissile].speed = 150.f;
+	data[Projectile::AlliedMissile].texture = Textures::Missile;
+
+	data[Projectile::EnemyMissile].damage = 30;
+	data[Projectile::EnemyMissile].speed = 150.f;
+	data[Projectile::EnemyMissile].texture = Textures::Missile;
 
 	return data;
 }
@@ -102,6 +108,11 @@ std::vector<ParticleData> initializeParticleData()
 	data[Particle::Smoke].color = sf::Color(50, 50, 50);
 	data[Particle::Smoke].lifetime = sf::seconds(4.f);
 
+	data[Particle::EnemySmoke].color = sf::Color::Blue;
+	data[Particle::EnemySmoke].lifetime = sf::seconds(2.f);
+
+	data[Particle::Tracing].color = sf::Color(255, 255, 255);
+	data[Particle::Tracing].lifetime = sf::seconds(2.f);
 
 	return data;
 }

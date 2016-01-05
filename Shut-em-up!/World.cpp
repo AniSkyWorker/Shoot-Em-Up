@@ -126,10 +126,15 @@ void World::buildScene()
 
 	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(Particle::Smoke, textures));
 	scene_layers[aircraft]->attachChild(std::move(smokeNode));
+
+	std::unique_ptr<ParticleNode> enemySmokeNode(new ParticleNode(Particle::EnemySmoke, textures));
+	scene_layers[aircraft]->attachChild(std::move(enemySmokeNode));
 	 
 	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, textures));
 	scene_layers[aircraft]->attachChild(std::move(propellantNode));
 
+	std::unique_ptr<ParticleNode> tracingNode(new ParticleNode(Particle::Tracing, textures));
+	scene_layers[aircraft]->attachChild(std::move(tracingNode));
 
 	addEnemies();
 }
@@ -258,9 +263,18 @@ void World::guideMissiles()
 			missile.guideTowards(closest_enemy->getWorldPosition());
 		}
 	});
-
+	Command enemy_missile_guider;
+	enemy_missile_guider.category = Category::EnemyProjectile;
+	enemy_missile_guider.action = derivedAction<Projectile>([this](Projectile& missile, sf::Time)
+	{
+		if (!missile.isGuided())
+			return;
+		if (!player_aircraft->isDestroyed())
+			missile.guideTowards(player_aircraft->getWorldPosition());
+	});
 	command_queue.push(collector);
 	command_queue.push(missile_guider);
+	command_queue.push(enemy_missile_guider);
 	enemies.clear();
 }
 
@@ -299,7 +313,7 @@ void World::handleCollisions()
 			enemy.destroy();
 		}
 
-		 if (matchesCategories(pair, Category::PlayerAircraft, Category::Pickup))
+		if (matchesCategories(pair, Category::PlayerAircraft, Category::Pickup))
 		{
 			auto& player = static_cast<Aircraft&>(*pair.first);
 			auto& pickup = static_cast<Pickup&>(*pair.second);
@@ -308,14 +322,25 @@ void World::handleCollisions()
 			pickup.destroy();
 		}
 
-		else if (matchesCategories(pair, Category::EnemyAircraft, Category::AlliedProjectile)
-			|| matchesCategories(pair, Category::PlayerAircraft, Category::EnemyProjectile))
+		if (matchesCategories(pair, Category::EnemyAircraft, Category::AlliedProjectile)
+			 || matchesCategories(pair, Category::PlayerAircraft, Category::EnemyProjectile))
 		{
 			auto& aircraft = static_cast<Aircraft&>(*pair.first);
 			auto& projectile = static_cast<Projectile&>(*pair.second);
 
 			aircraft.damage(projectile.getDamage());
 			projectile.destroy();
+		}
+		else if (matchesCategories(pair, Category::EnemyProjectile, Category::AlliedProjectile))
+		{
+			auto& enemy_project = static_cast<Projectile&>(*pair.first);
+			auto& allied_project = static_cast<Projectile&>(*pair.second);
+			if (enemy_project.type == Projectile::Type::EnemyMissile
+				|| (enemy_project.type == Projectile::Type::EnemyMissile && allied_project.type == Projectile::Type::EnemyMissile))
+			{
+				enemy_project.destroy();
+				allied_project.destroy();
+			}
 		}
 	}
 }

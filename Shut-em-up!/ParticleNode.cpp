@@ -85,6 +85,8 @@ void ParticleNode::computeVertices() const
 		sf::Color color = particle.color;
 
 		float ratio = particle.lifetime.asSeconds() / Table[type].lifetime.asSeconds();
+		if (type == Particle::Type::Tracing)
+			ratio *= 0.2f;
 		color.a = static_cast<sf::Uint8>(255 * std::max(ratio, 0.f));
 
 		addVertex(pos.x - half.x, pos.y - half.y, 0.f, 0.f, color);

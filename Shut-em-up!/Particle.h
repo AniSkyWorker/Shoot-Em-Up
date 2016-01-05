@@ -10,6 +10,8 @@ struct Particle
 	{
 		Propellant,
 		Smoke,
+		Tracing,
+		EnemySmoke,
 		ParticleCount
 	};
 

@@ -7,7 +7,7 @@
 #include <cassert>
 
 
-template <typename Resource,typename Identifier>
+template <typename Resource, typename Identifier>
 struct ResourceHolder
 {
 	void load(Identifier id, const std::string filename)

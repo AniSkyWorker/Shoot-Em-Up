@@ -22,18 +22,26 @@ Projectile::Projectile(Type type, const TextureHolder& textures)
 	explosion.setFrameSize(sf::Vector2i(256, 256));
 	explosion.setNumFrames(16);
 	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
-
+	
 	if (isGuided())
 	{
 		
 		explosion.setPosition(0.f, -100.f);
 		explosion.setDuration(sf::seconds(0.5f));
+		if (type == Type::EnemyMissile)
+		{
+			std::unique_ptr<EmitterNode> smoke(new EmitterNode(Particle::EnemySmoke));
+			smoke->setPosition(0.f, getBoundingRect().height / 2.f);
+			attachChild(std::move(smoke));
+		}
+		else
+		{
+			std::unique_ptr<EmitterNode> smoke(new EmitterNode(Particle::Smoke));
+			smoke->setPosition(0.f, getBoundingRect().height / 2.f);
+			attachChild(std::move(smoke));
+		}
 		
-
-		std::unique_ptr<EmitterNode> smoke(new EmitterNode(Particle::Smoke));
-		smoke->setPosition(0.f, getBoundingRect().height / 2.f);
-		attachChild(std::move(smoke));
-
+		
 		std::unique_ptr<EmitterNode> propellant(new EmitterNode(Particle::Propellant));
 		propellant->setPosition(0.f, getBoundingRect().height / 2.f);
 		attachChild(std::move(propellant));
@@ -43,6 +51,10 @@ Projectile::Projectile(Type type, const TextureHolder& textures)
 		explosion.setScale(0.2f, 0.2f);
 		explosion.setDuration(sf::seconds(0.5f));
 		explosion.setPosition(0.f, -20.f);
+
+		std::unique_ptr<EmitterNode> tracing(new EmitterNode(Particle::Tracing));
+		tracing->setPosition(0.f, getBoundingRect().height / 2.f);
+		attachChild(std::move(tracing));
 	}
 }
 
@@ -55,7 +67,7 @@ void Projectile::guideTowards(sf::Vector2f position)
 
 bool Projectile::isGuided() const
 {
-	return type == Missile;
+	return type == EnemyMissile || type == AlliedMissile;
 }
 
 void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
@@ -89,7 +101,7 @@ void Projectile::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) 
 
 unsigned Projectile::getCategory() const
 {
-	if (type == EnemyBullet)
+	if (type == EnemyBullet || type == EnemyMissile)
 		return Category::EnemyProjectile;
 	return Category::AlliedProjectile;
 }

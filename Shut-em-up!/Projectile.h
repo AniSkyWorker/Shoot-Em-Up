@@ -11,7 +11,8 @@ struct Projectile : public Entity
 	{
 		AlliedBullet,
 		EnemyBullet,
-		Missile,
+		AlliedMissile,
+		EnemyMissile,
 		TypeCount
 	};
 

@@ -4,6 +4,8 @@
 #include "Projectile.h"
 #include "Pickup.h"
 #include "TextNode.h"
+#include "HealthNode.h"
+#include "MissileIcon.h"
 #include "Data.h"
 #include "Command.h"
 #include "Animation.h"
@@ -46,6 +48,8 @@ struct Aircraft : public Entity
 	void createPickup(SceneNode& node, const TextureHolder& textures) const;
 
 	void updateTexts();
+	void updateBar();
+	void updateMissile();
 
 	Type type;
 	sf::Sprite sprite;
@@ -71,6 +75,8 @@ struct Aircraft : public Entity
 
 	TextNode* health_display;
 	TextNode* missile_display;
+	HealthNode* health_bar;
+	MissileIcon* missile_icon;
 
 	Animation explosion;
 	bool show_explosion;
