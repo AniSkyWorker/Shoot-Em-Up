@@ -10,7 +10,7 @@ namespace
 Pickup::Pickup(Type type, const TextureHolder& textures)
 	:Entity(1)
 	,type(type)
-	,sprite(textures.get(Table[type].texture))
+	,sprite(textures.get(Table[type].texture), Table[type].texture_rect)
 {
 	sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().width / 2.f);
 }

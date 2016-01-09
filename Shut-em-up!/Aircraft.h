@@ -6,6 +6,7 @@
 #include "TextNode.h"
 #include "HealthNode.h"
 #include "MissileIcon.h"
+#include "PickupNode.h"
 #include "Data.h"
 #include "Command.h"
 #include "Animation.h"
@@ -44,12 +45,16 @@ struct Aircraft : public Entity
 
 	void createBullets(SceneNode& node, const TextureHolder& textures) const;
 	void createProjectile(SceneNode& node, Projectile::Type type, float xOffset, float yOffset, const TextureHolder& textures) const;
+
 	void checkPickupDrop(CommandQueue& commands);
 	void createPickup(SceneNode& node, const TextureHolder& textures) const;
 
 	void updateTexts();
 	void updateBar();
 	void updateMissile();
+	void updatePickupBar();
+
+	void updatePlayerInterface();
 
 	Type type;
 	sf::Sprite sprite;
@@ -73,14 +78,15 @@ struct Aircraft : public Entity
 	float travalled_distance;
 	std::size_t	direction_index;
 
-	TextNode* health_display;
 	TextNode* missile_display;
 	HealthNode* health_bar;
 	MissileIcon* missile_icon;
+	PickupNode* pickup_bar;
 
 	Animation explosion;
 	bool show_explosion;
 
 	void updateRollAnimation();
+	void initAnimation();
 	
 };

@@ -1,6 +1,7 @@
 #include "ParticleNode.h"
 #include "Data.h"
 #include "ResourceHolder.h"
+#include "Math.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -82,8 +83,8 @@ void ParticleNode::computeVertices() const
 	for(const Particle& particle : particles)
 	{
 		sf::Vector2f pos = particle.position;
-		sf::Color color = particle.color;
-
+		sf::Color color= particle.color;
+		
 		float ratio = particle.lifetime.asSeconds() / Table[type].lifetime.asSeconds();
 		if (type == Particle::Type::Tracing)
 			ratio *= 0.2f;

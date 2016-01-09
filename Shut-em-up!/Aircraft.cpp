@@ -7,6 +7,7 @@
 #include <cmath>
 #include <random>
 #include <ctime>
+#include "EmitterNode.h"
 
 
 namespace
@@ -24,7 +25,7 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,is_firing(false)
 	,is_missile_launch(false)
 	,sprite(textures.get(Table[type].texture), Table[type].texture_rect)
-	,fire_rate(1)
+	,fire_rate(0)
 	,spread_level(1)
 	,missile_ammo(10)
 	,show_explosion(true)
@@ -33,18 +34,12 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,travalled_distance(0.f)
 	,direction_index(0)
 	,missile_display(nullptr)
-	,health_display(nullptr)
 	,missile_icon(nullptr)
 	,health_bar(nullptr)
 	,explosion(textures.get(Textures::Explosion))
 {
-	explosion.setFrameSize(sf::Vector2i(256, 256));
-	explosion.setNumFrames(16);
-	explosion.setScale(1.1f, 1.1f);
-	explosion.setDuration(sf::seconds(1.2f));
-	explosion.setPosition(0.f, -100.f);
+	initAnimation();
 
-	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 	sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 
 	fire_command.category = Category::SceneAirLayer;
@@ -68,32 +63,44 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 		createPickup(node, textures);
 	};
 
-
 	if (getCategory() == Category::PlayerAircraft)
 	{
-		//std::unique_ptr<TextNode> health(new TextNode(fonts, ""));
-	//	health_display = health.get();
-		//attachChild(std::move(health));
+		std::unique_ptr<HealthNode> bar(new HealthNode(Table[type].hitpoints));
+		health_bar = bar.get();
+		health_bar->setPosition(0.f, 60.f);
+		attachChild(std::move(bar));
 
 		std::unique_ptr<TextNode> missile(new TextNode(fonts, ""));
 		missile_display = missile.get();
+		missile_display->setPosition(health_bar->getPosition().x, health_bar->getPosition().y - 20.f);
 		attachChild(std::move(missile));
-
-		std::unique_ptr<HealthNode> bar(new HealthNode(Table[type].hitpoints));
-		health_bar = bar.get();
-		attachChild(std::move(bar));
 
 		std::unique_ptr<MissileIcon> icon(new MissileIcon(textures));
 		missile_icon = icon.get();
-		missile_icon->setPosition(-20.f, 40.f);
+		missile_icon->setPosition(missile_display->getPosition().x - 20.f, missile_display->getPosition().y);
 		attachChild(std::move(icon));
 
-		updateTexts();
-		updateBar();
-		updateMissile();
-	}
+		std::unique_ptr<PickupNode> pickup_display(new PickupNode(textures));
+		pickup_bar = pickup_display.get();
+		pickup_bar->setPosition(missile_display->getPosition().x + 20.f, missile_display->getPosition().y);
+		attachChild(std::move(pickup_display));
 
-	
+		updatePlayerInterface();
+	}
+	if (type == Type::Boss)
+	{
+		missile_ammo = 50;
+	}
+}
+
+void Aircraft::initAnimation()
+{
+	explosion.setFrameSize(sf::Vector2i(256, 256));
+	explosion.setNumFrames(16);
+	explosion.setScale(1.1f, 1.1f);
+	explosion.setDuration(sf::seconds(1.2f));
+	explosion.setPosition(0.f, -100.f);
+	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 }
 
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -105,8 +112,7 @@ void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
 
 void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	updateTexts();
-	updateBar();
+	
 	updateRollAnimation();
 	
 	if(isDestroyed())
@@ -117,28 +123,38 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	}
 
 	checkProjectileLaunch(dt, commands);
-	updateMissile();
+
+	if (isAllied())
+		updatePlayerInterface();
+
 	updateMovementPattern(dt);
 	Entity::updateCurrent(dt, commands);
 }
 
+void Aircraft::updatePlayerInterface()
+{
+	updateMissile();
+	updatePickupBar();
+	updateTexts();
+	updateBar();
+}
+
+void Aircraft::updatePickupBar()
+{
+		pickup_bar->checkPickup(spread_level, fire_rate);
+}
+
 void Aircraft::updateMissile()
 {
-	if (missile_icon)
-		if (missile_ammo != 0)
-			missile_icon->setReady(missile_countdown);
-		else
-			missile_icon->sprite.setColor(sf::Color(255, 255, 255, 0));
+	if (missile_ammo != 0)
+		missile_icon->setReady(missile_countdown);
+	else
+		missile_icon->sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
 void Aircraft::updateBar()
 {
-	if (health_bar)
-	{
-		health_bar->setSize(getHitpoints());
-		health_bar->setPosition(0.f, 60.f);
-		health_bar->setRotation(-getRotation());
-	}
+	health_bar->setSize(getHitpoints());
 }
 
 unsigned int Aircraft::getCategory() const
@@ -177,7 +193,7 @@ float Aircraft::getMaxSpeed() const
 
 void Aircraft::increaseFireRate()
 {
-	if (fire_rate < 5)
+	if (fire_rate < 3)
 		++fire_rate;
 }
 
@@ -326,21 +342,10 @@ void Aircraft::createProjectile(SceneNode& node, Projectile::Type type, float xO
 
 void Aircraft::updateTexts()
 {
-	if (health_display)
-	{
-		health_display->setString(std::to_string(getHitpoints()) + " HP");
-		health_display->setPosition(0.f, 50.f);
-		health_display->setRotation(-getRotation());
-	}
-
-	if (missile_display)
-	{
-		missile_display->setPosition(0.f, 38.f);
 		if (missile_ammo == 0)
 			missile_display->setString("");
 		else
 			missile_display->setString(std::to_string(missile_ammo));
-	}
 }
 
 void Aircraft::createPickup(SceneNode& node, const TextureHolder& textures) const

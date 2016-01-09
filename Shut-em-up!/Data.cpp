@@ -10,7 +10,7 @@ std::vector<AircraftData> initializeAircraftData()
 {
 	std::vector<AircraftData> data(Aircraft::TypeCount);
 
-	data[Aircraft::Eagle].hitpoints = 250;
+	data[Aircraft::Eagle].hitpoints = 350;
 	data[Aircraft::Eagle].speed = 200.f;
 	data[Aircraft::Eagle].fire_interval = sf::seconds(0.2f);
 	data[Aircraft::Eagle].missile_interval = sf::seconds(1);
@@ -42,16 +42,21 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Avenger].roll_animation = false;
 	data[Aircraft::Avenger].missile_interval = sf::Time::Zero;
 
-	data[Aircraft::Boss].hitpoints = 500;
-	data[Aircraft::Boss].speed = 150.f;
+	data[Aircraft::Boss].hitpoints = 1000;
+	data[Aircraft::Boss].speed = 100.f;
 	data[Aircraft::Boss].texture = Textures::Raptor;
 	data[Aircraft::Boss].texture_rect = sf::IntRect(0, 0, 84, 68);
-	data[Aircraft::Boss].directions.push_back(Direction(90.f, 300.f));
+	data[Aircraft::Boss].directions.push_back(Direction(90.f, 200.f));
+	data[Aircraft::Boss].directions.push_back(Direction(0.f, 200.f));
+	data[Aircraft::Boss].directions.push_back(Direction(-135.f, 282.f));
 	data[Aircraft::Boss].directions.push_back(Direction(-90.f, 300.f));
-	data[Aircraft::Boss].directions.push_back(Direction(-90.f, 300.f));
-	data[Aircraft::Boss].directions.push_back(Direction(90.f, 300.f));
+	data[Aircraft::Boss].directions.push_back(Direction(0.f, 200.f));
+	data[Aircraft::Boss].directions.push_back(Direction(135.f, 282.f));
+	data[Aircraft::Boss].directions.push_back(Direction(0.f, 200.f));
+	data[Aircraft::Boss].directions.push_back(Direction(180.f, 200.f));
 	data[Aircraft::Boss].fire_interval = sf::seconds(2);
 	data[Aircraft::Boss].roll_animation = false;
+	data[Aircraft::Boss].missile_interval = sf::seconds(2);
 
 	return data;
 }
@@ -60,7 +65,7 @@ std::vector<ProjectileData> initializeProjectileData()
 {
 	std::vector<ProjectileData> data(Projectile::TypeCount);
 
-	data[Projectile::AlliedBullet].damage = 5;
+	data[Projectile::AlliedBullet].damage = 8;
 	data[Projectile::AlliedBullet].speed = 300.f;
 	data[Projectile::AlliedBullet].texture = Textures::Bullets;
 
@@ -84,15 +89,19 @@ std::vector<PickupData> initializePickupData()
 	std::vector<PickupData> data(Pickup::TypeCount);
 
 	data[Pickup::HealthRefill].texture = Textures::Health;
+	data[Pickup::HealthRefill].texture_rect = sf::IntRect(0, 0, 40, 40);
 	data[Pickup::HealthRefill].action = [](Aircraft& a) { if (a.getHitpoints() < 250.f) a.repair(25); };
 
 	data[Pickup::MissileRefill].texture = Textures::MissilePick;
+	data[Pickup::MissileRefill].texture_rect = sf::IntRect(0, 0, 40, 40);
 	data[Pickup::MissileRefill].action = std::bind(&Aircraft::collectMissiles, _1, 3);
 
 	data[Pickup::FireSpread].texture = Textures::FireSpread;
+	data[Pickup::FireSpread].texture_rect = sf::IntRect(0, 0, 40, 40);
 	data[Pickup::FireSpread].action = std::bind(&Aircraft::increaseSpread, _1);
 
 	data[Pickup::FireRate].texture = Textures::FireRate;
+	data[Pickup::FireRate].texture_rect = sf::IntRect(0, 0, 40, 40);
 	data[Pickup::FireRate].action = std::bind(&Aircraft::increaseFireRate, _1);
 
 	return data;
@@ -106,9 +115,9 @@ std::vector<ParticleData> initializeParticleData()
 	data[Particle::Propellant].lifetime = sf::seconds(0.8f);
 
 	data[Particle::Smoke].color = sf::Color(50, 50, 50);
-	data[Particle::Smoke].lifetime = sf::seconds(4.f);
+	data[Particle::Smoke].lifetime = sf::seconds(5.f);
 
-	data[Particle::EnemySmoke].color = sf::Color::Blue;
+	data[Particle::EnemySmoke].color = sf::Color::Red;
 	data[Particle::EnemySmoke].lifetime = sf::seconds(2.f);
 
 	data[Particle::Tracing].color = sf::Color(255, 255, 255);
