@@ -3,6 +3,9 @@
 #include "Component.h"
 #include "ResourceIdientificators.h"
 #include "ResourceHolder.h"
+#include "SoundPlayer.h"
+
+#include "State.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -21,7 +24,7 @@ namespace GUI
 			typedef std::shared_ptr<Button>		Ptr;
 			typedef std::function<void()>		Callback;
 		
-			Button(const FontHolder& fonts, const TextureHolder& textures);
+			Button(State::Context context);
 
 			void setCallback(Callback callback);
 			void setText(const std::string& text);
@@ -38,12 +41,16 @@ namespace GUI
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 			Callback callback;
+
 			const sf::Texture& norm_texture;
 			const sf::Texture& select_texture;
 			const sf::Texture& press_texture;
+
 			sf::Sprite sprite;
 			sf::Text text;
 			bool is_toggle;
+
+			SoundPlayer& sounds;
 	};
 
 }

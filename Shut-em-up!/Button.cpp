@@ -8,14 +8,15 @@
 namespace GUI
 {
 
-	Button::Button(const FontHolder& fonts, const TextureHolder& textures)
+	Button::Button(State::Context context)
 		:callback()
-		,norm_texture(textures.get(Textures::ButtonNormal))
-		,select_texture(textures.get(Textures::ButtonSelected))
-		,press_texture(textures.get(Textures::ButtonPressed))
+		,norm_texture(context.textures->get(Textures::ButtonNormal))
+		,select_texture(context.textures->get(Textures::ButtonSelected))
+		,press_texture(context.textures->get(Textures::ButtonPressed))
 		,sprite()
-		,text("", fonts.get(Fonts::Main), 16)
+		,text("", context.fonts->get(Fonts::Main), 16)
 		,is_toggle(false)
+		,sounds(*context.sounds)
 	{
 		sprite.setTexture(norm_texture);
 
@@ -68,6 +69,7 @@ namespace GUI
 
 		if (!is_toggle)
 			deactivate();
+		sounds.play(SoundEffect::Button);
 	}
 
 	void Button::deactivate()

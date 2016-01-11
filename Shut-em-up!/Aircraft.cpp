@@ -8,7 +8,9 @@
 #include <random>
 #include <ctime>
 #include "EmitterNode.h"
+#include "SoundNode.h"
 
+using namespace std::placeholders;
 
 namespace
 {
@@ -37,8 +39,13 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	,missile_icon(nullptr)
 	,health_bar(nullptr)
 	,explosion(textures.get(Textures::Explosion))
+	,flame(textures.get(Textures::Flame))
+	,smoke(textures.get(Textures::Smoke))
+	,played_exp_sound(false)
+	,show_flame(false)
+	,show_smoke(false)
 {
-	initAnimation();
+	initAnimations();
 
 	sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
 
@@ -93,34 +100,64 @@ Aircraft::Aircraft(Type type, const TextureHolder& textures, const FontHolder& f
 	}
 }
 
-void Aircraft::initAnimation()
+void Aircraft::initAnimations()
 {
+	smoke.setFrameSize(sf::Vector2i(128, 128));
+	smoke.setNumFrames(34);
+	smoke.setDuration(sf::seconds(2.f));
+	smoke.setPosition(0.f, -0.f);
+	smoke.setRepeating(true);
+	smoke.setOrigin(smoke.getGlobalBounds().width / 2.f, smoke.getGlobalBounds().height / 2.f);
+
+	flame.setFrameSize(sf::Vector2i(16, 24));
+	flame.setNumFrames(12);
+	flame.setDuration(sf::seconds(1.2f));
+	flame.setPosition(0.f, -0.f);
+	flame.setRepeating(true);
+	flame.setOrigin(flame.getGlobalBounds().width / 2.f, flame.getGlobalBounds().height / 2.f);
+
 	explosion.setFrameSize(sf::Vector2i(256, 256));
 	explosion.setNumFrames(16);
 	explosion.setScale(1.1f, 1.1f);
 	explosion.setDuration(sf::seconds(1.2f));
-	explosion.setPosition(0.f, -100.f);
-	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
+	explosion.setPosition(0.f, 0.f);
+	explosion.setOrigin(explosion.getGlobalBounds().width / 2.f, explosion.getGlobalBounds().height / 2.f);
 }
 
 void Aircraft::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(sprite, states);
 	if (isDestroyed() && show_explosion)
+	{
 		target.draw(explosion, states);
+		return;
+	}
+	if (show_smoke)
+		target.draw(smoke, states);
+	if (show_flame)
+		target.draw(flame, states);
 }
 
 void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	
 	updateRollAnimation();
-	
+
 	if(isDestroyed())
 	{
 		checkPickupDrop(commands);
 		explosion.update(dt);
+		if (!played_exp_sound)
+		{
+			SoundEffect::ID soundEffect = (Math::random(2) == 0) ? SoundEffect::Explosion1 : SoundEffect::Explosion2;
+			playLocalSound(commands, soundEffect);
+
+			played_exp_sound = true;
+		}
 		return;
 	}
+	
+	checkHitpoints(dt);
 
 	checkProjectileLaunch(dt, commands);
 
@@ -131,6 +168,23 @@ void Aircraft::updateCurrent(sf::Time dt, CommandQueue& commands)
 	Entity::updateCurrent(dt, commands);
 }
 
+void Aircraft::checkHitpoints(sf::Time dt)
+{
+	if (Table[type].hitpoints / getHitpoints() >= 2)
+	{
+		show_smoke = true;
+		smoke.update(dt);
+	}
+	else
+		show_smoke = false;
+	if (Table[type].hitpoints / getHitpoints() >= 4)
+	{
+		show_flame = true;
+		flame.update(dt);
+	}
+	else
+		show_flame = false;
+}
 void Aircraft::updatePlayerInterface()
 {
 	updateMissile();
@@ -252,6 +306,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 
 	if (is_firing && fire_countdown <= sf::Time::Zero)
 	{
+		playLocalSound(commands, isAllied() ? SoundEffect::AlliedGunfire : SoundEffect::EnemyGunfire);
 		commands.push(fire_command);
 		fire_countdown += Table[type].fire_interval / (fire_rate + 1.f);
 		is_firing = false;
@@ -265,6 +320,7 @@ void Aircraft::checkProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	if (is_missile_launch && missile_countdown <= sf::Time::Zero)
 	{
 		--missile_ammo;
+		playLocalSound(commands, SoundEffect::LaunchMissile);
 		commands.push(missile_command);
 		missile_countdown += Table[type].missile_interval / (fire_rate + 1.f);
 		is_missile_launch = false;
@@ -371,4 +427,14 @@ void Aircraft::updateRollAnimation()
 
 		sprite.setTextureRect(textureRect);
 	}
+}
+
+void Aircraft::playLocalSound(CommandQueue& commands, SoundEffect::ID effect)
+{
+	Command command;
+	command.category = Category::SoundEffect;
+	command.action = derivedAction<SoundNode>(
+		std::bind(&SoundNode::playSound, _1, effect, getWorldPosition()));
+
+	commands.push(command);
 }

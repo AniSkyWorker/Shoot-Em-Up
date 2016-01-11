@@ -13,7 +13,7 @@ MenuState::MenuState(StateStack& stack, Context context)
 	sf::Texture& texture = context.textures->get(Textures::TitleScreen);
 	background_sprite.setTexture(texture);
 
-	auto playButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+	auto playButton = std::make_shared<GUI::Button>(context);
 	playButton->setPosition(100, 300);
 	playButton->setText("Play");
 	playButton->setCallback([this] ()
@@ -22,15 +22,15 @@ MenuState::MenuState(StateStack& stack, Context context)
 		requestStackPush(States::game);
 	});
 
-	auto settingsButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+	auto settingsButton = std::make_shared<GUI::Button>(context);
 	settingsButton->setPosition(100, 350);
 	settingsButton->setText("Settings");
 	settingsButton->setCallback([this] ()
 	{
-		//requestStackPush(States::settings);
+		requestStackPush(States::settings);
 	});
 
-	auto exitButton = std::make_shared<GUI::Button>(*context.fonts, *context.textures);
+	auto exitButton = std::make_shared<GUI::Button>(context);
 	exitButton->setPosition(100, 400);
 	exitButton->setText("Exit");
 	exitButton->setCallback([this] ()
@@ -41,6 +41,8 @@ MenuState::MenuState(StateStack& stack, Context context)
 	GUI_container.pack(playButton);
 	GUI_container.pack(settingsButton);
 	GUI_container.pack(exitButton);
+
+	context.music->play(Music::MenuTheme);
 }
 
 void MenuState::draw()

@@ -12,6 +12,7 @@ namespace Category
 		EnemyProjectile = 1 << 5,
 		Pickup = 1 << 6,
 		Particle = 1 << 7,
+		SoundEffect = 1 << 8,
 
 		Aircraft = PlayerAircraft | AlliedAircraft | EnemyAircraft,
 		Projectile = AlliedProjectile | EnemyProjectile,

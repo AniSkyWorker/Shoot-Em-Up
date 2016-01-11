@@ -7,8 +7,9 @@
 #include <memory>
 #include <iostream>
 #include "ParticleNode.h"
+#include "SoundNode.h"
 
-World::World(sf::RenderWindow& window, FontHolder& fonts) 
+World::World(sf::RenderWindow& window, FontHolder& fonts, SoundPlayer& sounds) 
 	:world_window(window)
 	,world_view(window.getDefaultView())
 	,textures()
@@ -20,6 +21,7 @@ World::World(sf::RenderWindow& window, FontHolder& fonts)
 	,scroll_speed(-50)
 	,player_aircraft(nullptr)
 	,fonts(fonts)
+	,sounds(sounds)
 	,spawn_points()
 {
 	loadTextures();
@@ -53,6 +55,9 @@ void World::update(sf::Time dt)
 	scene_graph.update(dt, command_queue);
 
 	updatePlayerPosition();
+
+	sounds.setListenerPosition(player_aircraft->getWorldPosition()); 
+	sounds.removeStoppedSounds();
 }
 
 void World::updatePlayerPosition()
@@ -88,30 +93,31 @@ void World::loadTextures()
 	textures.load(Textures::Eagle, "Media/textures/Eagle.png");
 	textures.load(Textures::Raptor, "Media/textures/Raptor.png");
 	textures.load(Textures::Avenger, "Media/textures/Avenger.png");
-	textures.load(Textures::Desert, "Media/textures/Jungle.png");
+	textures.load(Textures::MissionMap, "Media/textures/Jungle.png");
 	textures.load(Textures::Bullets, "Media/textures/Bullet.png");
 	textures.load(Textures::Missile, "Media/textures/Missile.png");
 	textures.load(Textures::Particle, "Media/textures/Particle.png");
 	textures.load(Textures::Explosion, "Media/Textures/Explosion.png");
+	textures.load(Textures::Flame, "Media/Textures/Flames.png");
+	textures.load(Textures::Smoke, "Media/Textures/Smoke.png");
 	textures.load(Textures::Health, "Media/Textures/HealthRefill.png");
 	textures.load(Textures::MissilePick, "Media/Textures/MissileRefill.png");
 	textures.load(Textures::FireSpread, "Media/Textures/FireSpread.png");
 	textures.load(Textures::FireRate, "Media/Textures/FireRate.png");
-	
 }
 
 void World::buildScene()
 {
 	for (std::size_t i = 0; i < count; ++i)
 	{
-		Category::Type category = (i == aircraft) ? Category::SceneAirLayer : Category::None;
+		Category::Type category = (i == lowerAircraft) ? Category::SceneAirLayer : Category::None;
 		SceneNode::Ptr layer(new SceneNode(category));
 		scene_layers[i] = layer.get();
 
 		scene_graph.attachChild(std::move(layer));
 	}
 
-	sf::Texture& texture = textures.get(Textures::Desert);
+	sf::Texture& texture = textures.get(Textures::MissionMap);
 	sf::IntRect texture_rect(world_bounds);
 	texture.setRepeated(true);
 
@@ -122,19 +128,22 @@ void World::buildScene()
 	std::unique_ptr<Aircraft> player(new Aircraft(Aircraft::Eagle, textures, fonts)); 
 	player_aircraft = player.get();
 	player_aircraft ->setPosition(player_position);
-	scene_layers[aircraft]->attachChild(std::move(player));
+	scene_layers[upperAircraft]->attachChild(std::move(player));
 
 	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(Particle::Smoke, textures));
-	scene_layers[aircraft]->attachChild(std::move(smokeNode));
+	scene_layers[lowerAircraft]->attachChild(std::move(smokeNode));
 
 	std::unique_ptr<ParticleNode> enemySmokeNode(new ParticleNode(Particle::EnemySmoke, textures));
-	scene_layers[aircraft]->attachChild(std::move(enemySmokeNode));
+	scene_layers[lowerAircraft]->attachChild(std::move(enemySmokeNode));
 	 
 	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(Particle::Propellant, textures));
-	scene_layers[aircraft]->attachChild(std::move(propellantNode));
+	scene_layers[lowerAircraft]->attachChild(std::move(propellantNode));
 
 	std::unique_ptr<ParticleNode> tracingNode(new ParticleNode(Particle::Tracing, textures));
-	scene_layers[aircraft]->attachChild(std::move(tracingNode));
+	scene_layers[lowerAircraft]->attachChild(std::move(tracingNode));
+
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(sounds));
+	scene_graph.attachChild(std::move(soundNode));
 
 	addEnemies();
 }
@@ -166,7 +175,7 @@ void World::spawnEnemies()
 		enemy->setPosition(spawn.x, spawn.y);
 		enemy->setRotation(180.f);
 		
-		scene_layers[aircraft]->attachChild(std::move(enemy));
+		scene_layers[upperAircraft]->attachChild(std::move(enemy));
 		spawn_points.pop_back();
 	}
 }
@@ -225,7 +234,9 @@ void World::destroyEntitiesOutsideView()
 	command.category = Category::Projectile | Category::EnemyAircraft;
 	command.action = derivedAction<Entity>([this](Entity& e, sf::Time)
 	{
-		if (!getBattlefieldBounds().intersects(e.getBoundingRect()))
+		sf::FloatRect play_zone = getBattlefieldBounds();
+		play_zone.height += 50.f;
+		if (!play_zone.intersects(e.getBoundingRect()))
 		{
 			e.destroy();
 		}
@@ -325,6 +336,7 @@ void World::handleCollisions()
 			auto& pickup = static_cast<Pickup&>(*pair.second);
 
 			pickup.apply(player);
+			player.playLocalSound(command_queue, SoundEffect::CollectPickup);
 			pickup.destroy();
 		}
 
@@ -335,6 +347,7 @@ void World::handleCollisions()
 			auto& projectile = static_cast<Projectile&>(*pair.second);
 
 			aircraft.damage(projectile.getDamage());
+			aircraft.playLocalSound(command_queue, (Math::random(2) == 0) ? SoundEffect::Explosion1 : SoundEffect::Explosion2);
 			projectile.destroy();
 		}
 		else if (matchesCategories(pair, Category::EnemyProjectile, Category::AlliedProjectile))

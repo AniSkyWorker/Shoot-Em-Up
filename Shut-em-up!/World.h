@@ -1,11 +1,15 @@
 #pragma once
-
-#include <SFML/Graphics.hpp>
 #include "ResourceHolder.h"
 #include "ResourceIdientificators.h"
+#include "SoundPlayer.h"
+
+#include <SFML/Graphics.hpp>
+
 #include "SceneNode.h"
 #include "SpriteNode.h"
+
 #include "Aircraft.h"
+
 #include "CommandQueue.h"
 #include "Command.h"
 
@@ -18,7 +22,7 @@ namespace sf
 
 struct World : private sf::NonCopyable
 {
-	World(sf::RenderWindow& window, FontHolder& fonts);
+	World(sf::RenderWindow& window, FontHolder& fonts, SoundPlayer& sounds);
 
 	void update(sf::Time dt);
 	void draw();
@@ -30,14 +34,18 @@ struct World : private sf::NonCopyable
 	enum Layer
 	{
 		background,
-		aircraft,
+		lowerAircraft,
+		upperAircraft,
 		count,
 	};
 
 	sf::RenderWindow& world_window;
 	sf::View world_view;
+
 	TextureHolder textures;
 	FontHolder& fonts;
+	SoundPlayer& sounds;
+
 	SceneNode scene_graph;
 	std::array<SceneNode*, count> scene_layers;
 	sf::FloatRect world_bounds;

@@ -18,6 +18,13 @@ PauseState::PauseState(StateStack& stack, Context context)
 	instructions.setString("(Press Escape to return to the main menu)");
 	instructions.setOrigin(instructions.getLocalBounds().width / 2.f, instructions.getLocalBounds().height / 2.f);
 	instructions.setPosition(0.5f * view_size.x, 0.6f * view_size.y);
+
+	getContext().music->setPaused(true);
+}
+
+PauseState::~PauseState()
+{
+	getContext().music->setPaused(false);
 }
 
 void PauseState::draw()

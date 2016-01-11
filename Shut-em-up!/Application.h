@@ -5,6 +5,8 @@
 #include "StateStack.h"
 #include "ResourceIdientificators.h"
 #include "ResourceHolder.h"
+#include "MusicPlayer.h"
+#include "SoundPlayer.h"
 
 struct Application
 {
@@ -31,4 +33,6 @@ struct Application
 	StateStack state_stack;
 	TextureHolder textures;
 	FontHolder fonts;
+	MusicPlayer music;
+	SoundPlayer sounds;
 };

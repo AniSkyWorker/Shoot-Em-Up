@@ -56,6 +56,8 @@ struct Aircraft : public Entity
 
 	void updatePlayerInterface();
 
+	void playLocalSound(CommandQueue& commands, SoundEffect::ID effect);
+
 	Type type;
 	sf::Sprite sprite;
 
@@ -84,9 +86,17 @@ struct Aircraft : public Entity
 	PickupNode* pickup_bar;
 
 	Animation explosion;
+	Animation flame;
+	Animation smoke;
+
 	bool show_explosion;
 
 	void updateRollAnimation();
-	void initAnimation();
-	
+	void initAnimations();
+	void checkHitpoints(sf::Time dt);
+
+	bool played_exp_sound;
+
+	bool show_smoke;
+	bool show_flame;
 };

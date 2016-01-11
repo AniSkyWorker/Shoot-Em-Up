@@ -4,6 +4,9 @@
 #include "Math.h"
 #include "EmitterNode.h"
 
+
+using namespace std::placeholders;
+
 namespace
 {
 	const std::vector<ProjectileData> Table = initializeProjectileData();
@@ -82,6 +85,7 @@ void Projectile::updateCurrent(sf::Time dt, CommandQueue& commands)
 		setRotation(Math::polarAngle(new_velocity));
 		setVelocity(new_velocity);
 	}
+
 	if (isDestroyed())
 	{
 		explosion.update(dt);

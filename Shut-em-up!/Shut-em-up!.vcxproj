@@ -167,10 +167,12 @@
     <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="HealthNode.h" />
+    <ClInclude Include="Label.h" />
     <ClInclude Include="LoadingState.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MissileIcon.h" />
+    <ClInclude Include="MusicPlayer.h" />
     <ClInclude Include="ObjectCategory.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ParallelTask.h" />
@@ -183,6 +185,9 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ResourceIdientificators.h" />
     <ClInclude Include="SceneNode.h" />
+    <ClInclude Include="SettingsState.h" />
+    <ClInclude Include="SoundNode.h" />
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="SpriteNode.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateIdientificators.h" />
@@ -208,11 +213,13 @@
     <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="HealthNode.cpp" />
+    <ClCompile Include="Label.cpp" />
     <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MissileIcon.cpp" />
+    <ClCompile Include="MusicPlayer.cpp" />
     <ClCompile Include="ParallelTask.cpp" />
     <ClCompile Include="ParticleNode.cpp" />
     <ClCompile Include="PauseState.cpp" />
@@ -222,6 +229,9 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SceneNode.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="SettingsState.cpp" />
+    <ClCompile Include="SoundNode.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="SpriteNode.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateStack.cpp" />

@@ -3,6 +3,9 @@
 #include <memory>
 #include "StateIdientificators.h"
 #include "ResourceIdientificators.h"
+#include "MusicPlayer.h"
+#include "SoundPlayer.h"
+
 #include <SFML/Graphics.hpp>
 
 namespace sf
@@ -19,12 +22,14 @@ struct State
 
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music,SoundPlayer& sounds);
 
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
 		Player* player;
+		MusicPlayer* music;
+		SoundPlayer* sounds;
 	};
 
 	State(StateStack& stack, Context context);

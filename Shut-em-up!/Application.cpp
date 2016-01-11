@@ -7,6 +7,7 @@
 #include "PauseState.h"
 #include "LoadingState.h"
 #include "GameOverState.h"
+#include "SettingsState.h"
 
 const sf::Time Application::time_per_frame = sf::seconds(1.f / 60.f);
 
@@ -14,12 +15,15 @@ Application::Application()
 	:window(sf::VideoMode(1024, 760), "Shoot them!!!", sf::Style::Close)
 	,textures()
 	,fonts()
+	,sounds()
 	,player()
 	,statistics_text()
 	,statistics_num_frames(0)
-	,state_stack(State::Context(window, textures, fonts, player))
+	,state_stack(State::Context(window, textures, fonts, player, music, sounds))
 {
 	window.setKeyRepeatEnabled(false);
+	window.setVerticalSyncEnabled(true);
+
 	fonts.load(Fonts::Main, "Media/Sansation.ttf");
 	textures.load(Textures::TitleScreen, "Media/Textures/TitleScreen.jpg");
 	textures.load(Textures::ButtonNormal, "Media/Textures/ButtonNormal.png");
@@ -32,6 +36,7 @@ Application::Application()
 
 	registerStates();
 	state_stack.pushState(States::title);
+	music.setVolume(50.f);
 }
 
 void Application::run()
@@ -108,4 +113,5 @@ void Application::registerStates()
 	state_stack.registerState<PauseState>(States::pause);
 	state_stack.registerState<LoadingState>(States::loading);
 	state_stack.registerState<GameOverState>(States::gameover);
+	state_stack.registerState<SettingsState>(States::settings);
 }
