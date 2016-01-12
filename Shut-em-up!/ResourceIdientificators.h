@@ -14,6 +14,7 @@ namespace Textures
 		Eagle,
 		Raptor,
 		Avenger,
+		Boss,
 
 		Bullets,
 		Missile,

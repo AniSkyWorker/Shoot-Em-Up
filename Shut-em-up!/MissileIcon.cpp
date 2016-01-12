@@ -12,7 +12,7 @@ MissileIcon::MissileIcon(const TextureHolder& textures)
 void MissileIcon::setReady(sf::Time dt)
 {
 	if (dt > sf::Time::Zero)
-		sprite.setColor(sf::Color(255, 255, 255, 255 - dt.asMilliseconds() *0.2));
+		sprite.setColor(sf::Color(255, 255, 255, 255 - dt.asMilliseconds() * 0.2f));
 	else
 		sprite.setColor(sf::Color(255, 255, 255, 255));
 }

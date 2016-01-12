@@ -44,8 +44,8 @@ std::vector<AircraftData> initializeAircraftData()
 
 	data[Aircraft::Boss].hitpoints = 1000;
 	data[Aircraft::Boss].speed = 100.f;
-	data[Aircraft::Boss].texture = Textures::Raptor;
-	data[Aircraft::Boss].texture_rect = sf::IntRect(0, 0, 84, 68);
+	data[Aircraft::Boss].texture = Textures::Boss;
+	data[Aircraft::Boss].texture_rect = sf::IntRect(0, 0, 107, 91);
 	data[Aircraft::Boss].directions.push_back(Direction(+90.f, 200.f));
 	data[Aircraft::Boss].directions.push_back(Direction(0.f, 200.f));
 	data[Aircraft::Boss].directions.push_back(Direction(-135.f, 282.f));
@@ -90,7 +90,7 @@ std::vector<PickupData> initializePickupData()
 
 	data[Pickup::HealthRefill].texture = Textures::Health;
 	data[Pickup::HealthRefill].texture_rect = sf::IntRect(0, 0, 40, 40);
-	data[Pickup::HealthRefill].action = [](Aircraft& a) { if (a.getHitpoints() < 250.f) a.repair(25); };
+	data[Pickup::HealthRefill].action = [](Aircraft& a) { if (a.getHitpoints() <= 260) a.repair(90); else a.repair(350 - a.getHitpoints());};
 
 	data[Pickup::MissileRefill].texture = Textures::MissilePick;
 	data[Pickup::MissileRefill].texture_rect = sf::IntRect(0, 0, 40, 40);

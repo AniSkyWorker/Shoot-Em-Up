@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vld.h>
 
 #include "Player.h"
 #include "StateStack.h"

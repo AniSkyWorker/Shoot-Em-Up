@@ -93,6 +93,7 @@ void World::loadTextures()
 	textures.load(Textures::Eagle, "Media/textures/Eagle.png");
 	textures.load(Textures::Raptor, "Media/textures/Raptor.png");
 	textures.load(Textures::Avenger, "Media/textures/Avenger.png");
+	textures.load(Textures::Boss, "Media/textures/Boss.png");
 	textures.load(Textures::MissionMap, "Media/textures/Jungle.png");
 	textures.load(Textures::Bullets, "Media/textures/Bullet.png");
 	textures.load(Textures::Missile, "Media/textures/Missile.png");
