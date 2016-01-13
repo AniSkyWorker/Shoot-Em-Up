@@ -9,7 +9,8 @@ struct GameOverState : public State
 	virtual bool update(sf::Time dt) override;
 	virtual bool handleEvent(const sf::Event& event) override;
 
-	sf::Text text;
+	sf::Text instructions_text;
+	sf::Text gameover_text;
 	sf::Time elapsed_time;
 };
 

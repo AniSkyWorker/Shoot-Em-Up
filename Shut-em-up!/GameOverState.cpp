@@ -8,22 +8,26 @@
 
 GameOverState::GameOverState(StateStack& stack, Context context)
 	:State(stack, context)
-	,text()
-	, elapsed_time(sf::Time::Zero)
+	,gameover_text()
+	,instructions_text()
+	,elapsed_time(sf::Time::Zero)
 {
 	sf::Font& font = context.fonts->get(Fonts::Main);
-	sf::Vector2f windowSize(context.window->getSize());
+	sf::Vector2f view_size = context.window->getView().getSize();
 
-	text.setFont(font);
+	gameover_text.setFont(font);
 	if (context.player->getMissionStatus() == Player::MissionFailure)
-		text.setString("Mission failed!");
+		gameover_text.setString("Mission failed!");
 	else
-		text.setString("Mission successful!");
-	text.setString(text.getString() + "\npress Enter to return to main menu");
+		gameover_text.setString("Mission successful!");
+	gameover_text.setCharacterSize(70);
+	gameover_text.setOrigin(gameover_text.getLocalBounds().width / 2.f, gameover_text.getLocalBounds().height / 2.f);
+	gameover_text.setPosition(0.5f * view_size.x, 0.4f * view_size.y);
 
-	text.setCharacterSize(50);
-	text.setOrigin(text.getGlobalBounds().width / 2.f, text.getGlobalBounds().height / 2.f);
-	text.setPosition(0.5f * windowSize.x, 0.4f * windowSize.y);
+	instructions_text.setFont(font);
+	instructions_text.setString("(Press Enter to return to main menu)");
+	instructions_text.setOrigin(instructions_text.getGlobalBounds().width / 2.f, instructions_text.getGlobalBounds().height / 2.f);
+	instructions_text.setPosition(0.5f * view_size.x, 0.6f * view_size.y);
 }
 
 void GameOverState::draw()
@@ -36,7 +40,8 @@ void GameOverState::draw()
 	backgroundShape.setSize(window.getView().getSize());
 
 	window.draw(backgroundShape);
-	window.draw(text);
+	window.draw(gameover_text);
+	window.draw(instructions_text);
 }
 
 bool GameOverState::update(sf::Time dt)
