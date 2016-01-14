@@ -6,6 +6,7 @@ GameState::GameState(StateStack& stack, Context context)
 	,player(*context.player)
 {
 	player.setMissionStatus(Player::MissionRunning);
+	context.music->setVolume(70.f);
 	context.music->play(Music::MissionTheme);
 }
 

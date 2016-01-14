@@ -12,7 +12,7 @@
 const sf::Time Application::time_per_frame = sf::seconds(1.f / 60.f);
 
 Application::Application() 
-	:window(sf::VideoMode(1024, 760), "Shoot them!!!", sf::Style::Close)
+	:window(sf::VideoMode(1024, 760), "Steel Starling", sf::Style::Close)
 	,textures()
 	,fonts()
 	,sounds()

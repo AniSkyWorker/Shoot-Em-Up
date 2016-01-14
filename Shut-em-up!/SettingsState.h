@@ -26,5 +26,3 @@ struct SettingsState : public State
 	std::array<GUI::Button::Ptr, Player::ActionCount> binding_buttons;
 	std::array<GUI::Label::Ptr, Player::ActionCount> binding_labels;
 };
-
-const std::string getKeyName(const sf::Keyboard::Key key);

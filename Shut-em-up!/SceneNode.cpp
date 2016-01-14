@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cassert>
 #include "Command.h"
-#include <iostream>
 
 SceneNode::SceneNode(Category::Type category)
 	:children()

@@ -150,6 +150,12 @@
     <ClInclude Include="SettingsState.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="KeyboardKeys.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -269,10 +275,30 @@
     <ClCompile Include="SettingsState.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="KeyboardKeys.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Shut-em-up!.rc">
       <Filter>Файлы ресурсов</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="Media\icon.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Downloads\favicon.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\ноутбук\downloads\icon2.ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Downloads\favicon(1).ico">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

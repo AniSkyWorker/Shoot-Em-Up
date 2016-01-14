@@ -43,7 +43,7 @@ std::vector<AircraftData> initializeAircraftData()
 	data[Aircraft::Avenger].missile_interval = sf::Time::Zero;
 
 	data[Aircraft::Boss].hitpoints = 1000;
-	data[Aircraft::Boss].speed = 100.f;
+	data[Aircraft::Boss].speed = 150.f;
 	data[Aircraft::Boss].texture = Textures::Boss;
 	data[Aircraft::Boss].texture_rect = sf::IntRect(0, 0, 107, 91);
 	data[Aircraft::Boss].directions.push_back(Direction(+90.f, 200.f));

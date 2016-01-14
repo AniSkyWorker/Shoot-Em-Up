@@ -180,6 +180,7 @@ void World::spawnEnemies()
 		spawn_points.pop_back();
 	}
 }
+
 void World::addEnemy(Aircraft::Type type, float x, float y)
 {
 	SpawnPoint spawn(type, player_position.x + x, player_position.y - y);
