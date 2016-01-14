@@ -169,14 +169,12 @@
     <ClInclude Include="HealthNode.h" />
     <ClInclude Include="KeyboardKeys.h" />
     <ClInclude Include="Label.h" />
-    <ClInclude Include="LoadingState.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MissileIcon.h" />
     <ClInclude Include="MusicPlayer.h" />
     <ClInclude Include="ObjectCategory.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="ParallelTask.h" />
     <ClInclude Include="ParticleNode.h" />
     <ClInclude Include="PauseState.h" />
     <ClInclude Include="Pickup.h" />
@@ -217,13 +215,11 @@
     <ClCompile Include="HealthNode.cpp" />
     <ClCompile Include="KeyboardKeys.cpp" />
     <ClCompile Include="Label.cpp" />
-    <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MissileIcon.cpp" />
     <ClCompile Include="MusicPlayer.cpp" />
-    <ClCompile Include="ParallelTask.cpp" />
     <ClCompile Include="ParticleNode.cpp" />
     <ClCompile Include="PauseState.cpp" />
     <ClCompile Include="Pickup.cpp" />
@@ -247,11 +243,7 @@
     <ResourceCompile Include="Shut-em-up!.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\..\ноутбук\downloads\icon2.ico" />
     <Image Include="..\..\..\..\..\Downloads\favicon(1).ico" />
-    <Image Include="..\..\..\..\..\Downloads\favicon.ico" />
-    <Image Include="icon1.ico" />
-    <Image Include="Media\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

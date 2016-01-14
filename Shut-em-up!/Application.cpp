@@ -5,7 +5,6 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PauseState.h"
-#include "LoadingState.h"
 #include "GameOverState.h"
 #include "SettingsState.h"
 
@@ -111,7 +110,6 @@ void Application::registerStates()
 	state_stack.registerState<MenuState>(States::menu);
 	state_stack.registerState<TitleState>(States::title);
 	state_stack.registerState<PauseState>(States::pause);
-	state_stack.registerState<LoadingState>(States::loading);
 	state_stack.registerState<GameOverState>(States::gameover);
 	state_stack.registerState<SettingsState>(States::settings);
 }

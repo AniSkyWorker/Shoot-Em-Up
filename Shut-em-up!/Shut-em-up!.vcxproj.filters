@@ -75,12 +75,6 @@
     <ClInclude Include="PauseState.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="LoadingState.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="ParallelTask.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -200,12 +194,6 @@
     <ClCompile Include="PauseState.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingState.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="ParallelTask.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -285,18 +273,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
-    <Image Include="Media\icon.ico">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
-    <Image Include="..\..\..\..\..\Downloads\favicon.ico">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
-    <Image Include="..\..\..\..\..\..\ноутбук\downloads\icon2.ico">
-      <Filter>Файлы ресурсов</Filter>
-    </Image>
     <Image Include="..\..\..\..\..\Downloads\favicon(1).ico">
       <Filter>Файлы ресурсов</Filter>
     </Image>
